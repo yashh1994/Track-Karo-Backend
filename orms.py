@@ -114,6 +114,19 @@ class Bus(Base):
         self.time = time
         self.organization_id = organization_id
 
+    def to_json(self):
+        return {
+            "bus_number": self.bus_number,
+            "bus_seats": self.bus_seats,
+            "bus_route": self.bus_route,
+            "driver_name": self.driver_name,
+            "driver_phone": self.driver_phone,
+            "register_numberplate": self.register_numberplate,
+            "status": self.status,
+            "shift": self.shift,
+            "time": self.time
+        }
+    
     def __repr__(self):
         organization_name = self.organization.institute_name if self.organization else "N/A"
         return f"<Bus(bus_number='{self.bus_number}', bus_seats='{self.bus_seats}', bus_route='{self.bus_route}', driver_name='{self.driver_name}', driver_phone='{self.driver_phone}', register_numberplate='{self.register_numberplate}', status='{self.status}', shift='{self.shift}', time='{self.time}', organization_name='{organization_name}')>"
