@@ -1,7 +1,9 @@
 
 
 
-.env
+sam.env
 
 
+
+.vscode
 venv
