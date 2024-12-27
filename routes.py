@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from orms import Base, Route, Organization, Driver, Bus
+from orms import Base, Bus, Driver, Organization, Route, Student
 
 load_dotenv()
 app = Flask(__name__)   
@@ -81,6 +81,8 @@ def get_all_bus():
 
 
 #! Add Routes
+
+
 
 @app.route('/add-organization', methods=['POST'])
 def add_organization():
@@ -221,6 +223,63 @@ def add_route():
     finally:
         session.close()
 
+
+@app.route('/add-student', methods=['POST'])
+def add_student():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "Invalid data provided"}), 400
+
+    session = Session()
+    
+    try:
+        # Extract data from the JSON payload
+        photo = data.get('photo', None)
+        enrollment_number = data.get('enrollment_number')
+        student_name = data.get('student_name')
+        student_phone = data.get('student_phone')
+        bus_number = data.get('bus_number')
+        route = data.get('route')
+        student_address = data.get('student_address')
+        busfee = data.get('busfee')
+        student_class = data.get('student_class')
+        status = data.get('status', True)
+        email = data.get('email')
+        organization_id = data.get('organization_id')
+
+        # Validate required fields
+        required_fields = ['enrollment_number', 'student_name', 'student_phone', 'bus_number', 
+                           'route', 'student_address', 'busfee', 'student_class', 'email', 'organization_id']
+        missing_fields = [field for field in required_fields if not data.get(field)]
+        if missing_fields:
+            return jsonify({"error": f"Missing required fields: {', '.join(missing_fields)}"}), 400
+
+        # Create a new Student object
+        new_student = Student(
+            photo=photo,
+            enrollment_number=enrollment_number,
+            student_name=student_name,
+            student_phone=student_phone,
+            bus_number=bus_number,
+            route=route,
+            student_address=student_address,
+            busfee=busfee,
+            student_class=student_class,
+            status=status,
+            email=email,
+            organization_id=organization_id
+        )
+
+        # Add the new student to the database
+        
+        session.add(new_student)
+        session.commit()
+
+        return jsonify({"message": "Student added successfully", "student": new_student.to_json()}), 201
+
+    except Exception as e:
+        session.rollback()
+        return jsonify({"error": str(e)}), 500
 
 
 

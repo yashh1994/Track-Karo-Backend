@@ -17,6 +17,8 @@ class Organization(Base):
     routes = relationship("Route", back_populates="organization", cascade="all, delete-orphan")
     buses = relationship("Bus", back_populates="organization", cascade="all, delete-orphan")
     drivers = relationship("Driver", back_populates="organization", cascade="all, delete-orphan")
+    students = relationship("Student", back_populates="organization", cascade="all, delete-orphan")
+
 
     def __init__(self, email, password, institute_name):
         self.email = email
@@ -130,4 +132,61 @@ class Bus(Base):
     def __repr__(self):
         organization_name = self.organization.institute_name if self.organization else "N/A"
         return f"<Bus(bus_number='{self.bus_number}', bus_seats='{self.bus_seats}', bus_route='{self.bus_route}', driver_name='{self.driver_name}', driver_phone='{self.driver_phone}', register_numberplate='{self.register_numberplate}', status='{self.status}', shift='{self.shift}', time='{self.time}', organization_name='{organization_name}')>"
+
+
+class Student(Base):
+
+    __tablename__ = "Student"
+
+    id = Column(Integer, primary_key=True)
+    photo = Column(String, nullable=True)
+    enrollment_number = Column(String, nullable=False)
+    student_name = Column(String, nullable=False)
+    student_phone = Column(String, nullable=False)
+    bus_number = Column(String, nullable=False)
+    route = Column(String, nullable=False)
+    student_address = Column(String, nullable=False)
+    busfee = Column(String, nullable=False)
+    student_class = Column(String, nullable=False)  
+    status = Column(Boolean, nullable=False)
+    email = Column(String, nullable=False)
+    
+    organization_id = Column(Integer, ForeignKey('Organization.id'), nullable=False)
+    organization = relationship("Organization", back_populates="students")
+
+
+    def __init__(self, photo, enrollment_number, student_name, student_phone, bus_number, route, student_address, busfee, student_class, status, email, organization_id):
+        self.photo = photo
+        self.enrollment_number = enrollment_number
+        self.student_name = student_name
+        self.student_phone = student_phone
+        self.bus_number = bus_number
+        self.route = route
+        self.student_address = student_address
+        self.busfee = busfee
+        self.student_class = student_class
+        self.status = status
+        self.email = email
+        self.organization_id = organization_id
+
+    def __repr__(self):
+        organization_name = self.organization.institute_name if self.organization else "N/A"
+        return f"<Student(photo='{self.photo}', enrollment_number='{self.enrollment_number}', student_name='{self.student_name}', student_phone='{self.student_phone}', bus_number='{self.bus_number}', route='{self.route}', student_address='{self.student_address}', busfee='{self.busfee}', student_class='{self.student_class}', status='{self.status}', email='{self.email}', organization_name='{organization_name}')>"
+    
+    def to_json(self):
+        organization = self.organization.institute_name if self.organization else "N/A"
+        return {
+            "organization": organization,
+            "photo": self.photo,
+            "enrollment_number": self.enrollment_number,
+            "student_name": self.student_name,
+            "student_phone": self.student_phone,
+            "bus_number": self.bus_number,
+            "route": self.route,
+            "student_address": self.student_address,
+            "busfee": self.busfee,
+            "student_class": self.student_class,
+            "status": self.status,
+            "email": self.email
+        }
 
