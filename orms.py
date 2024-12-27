@@ -48,6 +48,16 @@ class Route(Base):
         self.stops = stops
         self.organization_id = organization_id
     
+    def to_json(self):
+        return {
+            "id": self.id,
+            "route_number": self.route_number,
+            "route_name": self.route_name,
+            "source": self.source,
+            "destination": self.destination,
+            "stops": self.stops
+        }
+
     def __repr__(self):
         organization_name = self.organization.institute_name if self.organization else "N/A"
         return f"<Route(route_number='{self.route_number}', route_name='{self.route_name}', source='{self.source}', destination='{self.destination}', stops='{self.stops}', organization_name='{organization_name}')>"
@@ -79,6 +89,20 @@ class Driver(Base):
         self.driver_salary = driver_salary
         self.status = status
         self.organization_id = organization_id
+
+
+    def to_json(self):
+        return {
+            "id": self.id,
+            "driver_photo": self.driver_photo,
+            "driver_name": self.driver_name,
+            "driver_phone": self.driver_phone,
+            "driver_address": self.driver_address,
+            "driver_route": self.driver_route,
+            "driver_busnumber": self.driver_busnumber,
+            "driver_salary": self.driver_salary,
+            "status": self.status
+        }
 
     def __repr__(self):
         organization_name = self.organization.institute_name if self.organization else "N/A"
@@ -118,6 +142,7 @@ class Bus(Base):
 
     def to_json(self):
         return {
+            "id": self.id,
             "bus_number": self.bus_number,
             "bus_seats": self.bus_seats,
             "bus_route": self.bus_route,
@@ -174,9 +199,7 @@ class Student(Base):
         return f"<Student(photo='{self.photo}', enrollment_number='{self.enrollment_number}', student_name='{self.student_name}', student_phone='{self.student_phone}', bus_number='{self.bus_number}', route='{self.route}', student_address='{self.student_address}', busfee='{self.busfee}', student_class='{self.student_class}', status='{self.status}', email='{self.email}', organization_name='{organization_name}')>"
     
     def to_json(self):
-        organization = self.organization.institute_name if self.organization else "N/A"
         return {
-            "organization": organization,
             "photo": self.photo,
             "enrollment_number": self.enrollment_number,
             "student_name": self.student_name,

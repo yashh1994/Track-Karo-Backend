@@ -20,69 +20,7 @@ Session = sessionmaker(bind=engine)
 
 
 
-
-@app.route('/get-organization-data/<string:id>', methods=['GET'])
-def get_organization_data(id):
-    session = Session()
-    organization = session.query(Organization).filter_by(id=id).first()
-    organization_buses = session.query(Bus).filter_by(organization_id=id).all()
-    organization_routes = session.query(Route).filter_by(organization_id=id).all()
-    organization_drivers = session.query(Driver).filter_by(organization_id=id).all()
-
-
-
-    if not organization:
-        return jsonify({"error": "Organization not found"}), 404
-    
-    organization_data = {
-        "Detials": {
-            "id": organization.id,
-            "institute_name": organization.institute_name,
-            "email": organization.email,
-            "password": organization.password
-        },
-        "buses": [bus.__repr__() for bus in organization_buses],
-        "routes": [route.__repr__() for route in organization_routes],
-        "drivers": [driver.__repr__() for driver in organization_drivers]
-    }
-
-    session.close()
-
-
-    if organization_data:
-        print("This is the organization data: ",organization_data)
-        return jsonify(organization_data), 200
-    else:
-        return jsonify({"error": "Organization not found"}), 404
-
-
-@app.route('/get-all-bus',methods=['GET'])
-def get_all_bus():
-    
-    data = request.get_json()
-    organization_id = data['organization_id']
-    session = Session()
-    buses = session.query(Bus).filter_by(organization_id=organization_id).all()
-    session.close()
-
-    print(buses)
-    
-    if buses:
-        return jsonify([bus.__repr__() for bus in buses]), 200
-    else:
-        return jsonify({"error": "No buses found"}), 404
-
-
-
-
-
-
-
-
-
-#! Add Routes
-
-
+#! Organization
 
 @app.route('/add-organization', methods=['POST'])
 def add_organization():
@@ -108,6 +46,113 @@ def add_organization():
         return jsonify({"error": str(e)}), 500
     finally:
         session.close()
+
+
+@app.route('/get-organization-data/<string:id>', methods=['GET'])
+def get_organization_data(id):
+    session = Session()
+    organization = session.query(Organization).filter_by(id=id).first()
+    organization_buses = session.query(Bus).filter_by(organization_id=id).all()
+    organization_routes = session.query(Route).filter_by(organization_id=id).all()
+    organization_drivers = session.query(Driver).filter_by(organization_id=id).all()
+    organization_students = session.query(Student).filter_by(organization_id=id).all()
+
+
+
+
+    if not organization:
+        return jsonify({"error": "Organization not found"}), 404
+    
+    organization_data = {
+        "Detials": {
+            "id": organization.id,
+            "institute_name": organization.institute_name,
+            "email": organization.email,
+            "password": organization.password
+        },
+        "buses": [bus.__repr__() for bus in organization_buses],
+        "routes": [route.__repr__() for route in organization_routes],
+        "drivers": [driver.__repr__() for driver in organization_drivers],
+        "Students": [student.__repr__() for student in organization_students]
+    }
+
+    session.close()
+
+
+    if organization_data:
+        print("This is the organization data: ",organization_data)
+        return jsonify(organization_data), 200
+    else:
+        return jsonify({"error": "Organization not found"}), 404
+
+
+
+
+#! Routes
+@app.route('/get-all-routes', methods=['GET'])
+def get_all_routes():
+    session = Session()
+    try:
+        data = request.get_json()
+
+        organization_id = data.get('organization_id', None)
+        
+        if organization_id is None:
+            return jsonify({"error": "organization_id is required as a query parameter"}), 400
+        
+        routes = session.query(Route).filter_by(organization_id=organization_id).all()
+        
+        if not routes:
+            return jsonify({"error": "No routes found for the given organization_id"}), 404
+        
+        route_data = [route.to_json() for route in routes]
+        
+        return jsonify(route_data), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        session.close()
+
+@app.route('/add-route', methods=['POST'])
+def add_route():
+    # Get data from the request body (assumed to be JSON)
+    data = request.get_json()
+
+    # Extract data from the request
+    route_number = data['route_number']
+    route_name = data['route_name']
+    source = data['source']
+    destination = data['destination']
+    stops = data['stops'] 
+    organization_id = data['organization_id']
+
+
+    # Create a new route object
+    new_route = Route(
+        route_number=route_number,
+        route_name=route_name,
+        source=source,
+        destination=destination,
+        stops=stops,
+        organization_id=organization_id
+    )
+
+    # Create a session and add the new route
+    session = Session()
+    try:
+        session.add(new_route)
+        session.commit()
+        return jsonify({"message": "Route added successfully"}), 201
+    except Exception as e:
+        session.rollback()
+        return jsonify({"error": str(e)}), 500
+    finally:
+        session.close()
+
+
+
+#! Driver
 
 @app.route('/add-driver', methods=['POST'])
 def add_driver():
@@ -145,6 +190,41 @@ def add_driver():
         return jsonify({"error": str(e)}), 500
     finally:
         session.close()
+
+@app.route('/get-all-drivers', methods=['GET'])
+def get_all_drivers():
+    data = request.get_json()
+
+    try:
+        organization_id = data.get('organization_id', None)
+
+        if organization_id is None:
+            return jsonify({"error": "organization_id is required as a query parameter"}), 400
+        
+        session = Session()
+
+        drivers = session.query(Driver).filter_by(organization_id=organization_id).all()
+        
+        if not drivers:
+            return jsonify({"error": "No drivers found for the given organization_id"}), 404
+        
+        driver_data = [driver.to_json() for driver in drivers]
+
+        return jsonify(driver_data), 200
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        session.close()
+
+   
+    
+
+
+
+
+
+#! Bus
 
 @app.route('/add-bus',methods=['POST'])
 def add_bus():
@@ -187,42 +267,37 @@ def add_bus():
     finally:
         session.close()
 
-@app.route('/add-route', methods=['POST'])
-def add_route():
-    # Get data from the request body (assumed to be JSON)
-    data = request.get_json()
 
-    # Extract data from the request
-    route_number = data['route_number']
-    route_name = data['route_name']
-    source = data['source']
-    destination = data['destination']
-    stops = data['stops'] 
-    organization_id = data['organization_id']
-
-
-    # Create a new route object
-    new_route = Route(
-        route_number=route_number,
-        route_name=route_name,
-        source=source,
-        destination=destination,
-        stops=stops,
-        organization_id=organization_id
-    )
-
-    # Create a session and add the new route
+@app.route('/get-all-bus', methods=['GET'])
+def get_all_bus():
     session = Session()
     try:
-        session.add(new_route)
-        session.commit()
-        return jsonify({"message": "Route added successfully"}), 201
+        data = request.get_json()
+
+        organization_id = data.get('organization_id', None)
+        
+        if organization_id is None:
+            return jsonify({"error": "organization_id is required as a query parameter"}), 400
+        
+        buses = session.query(Bus).filter_by(organization_id=organization_id).all()
+        
+        if not buses:
+            return jsonify({"error": "No buses found for the given organization_id"}), 404
+        
+        bus_data = [bus.to_json() for bus in buses]
+        
+        return jsonify(bus_data), 200
+
     except Exception as e:
-        session.rollback()
         return jsonify({"error": str(e)}), 500
     finally:
         session.close()
 
+
+
+
+
+#! Student
 
 @app.route('/add-student', methods=['POST'])
 def add_student():
@@ -231,7 +306,7 @@ def add_student():
         return jsonify({"error": "Invalid data provided"}), 400
 
     session = Session()
-    
+
     try:
         # Extract data from the JSON payload
         photo = data.get('photo', None)
@@ -275,13 +350,37 @@ def add_student():
         session.add(new_student)
         session.commit()
 
-        return jsonify({"message": "Student added successfully", "student": new_student.to_json()}), 201
+        return jsonify({"message": "Student added successfully", "student_id": new_student.to_json()}), 201
 
     except Exception as e:
         session.rollback()
         return jsonify({"error": str(e)}), 500
 
+@app.route('/get-all-students', methods=['GET'])
+def get_all_students():
+    data = request.get_json()
 
+    try:
+        organization_id = data.get('organization_id', None)
+
+        if organization_id is None:
+            return jsonify({"error": "organization_id is required as a query parameter"}), 400
+        
+        session = Session()
+
+        students = session.query(Student).filter_by(organization_id=organization_id).all()
+        
+        if not students:
+            return jsonify({"error": "No students found for the given organization_id"}), 404
+        
+        student_data = [student.to_json() for student in students]
+
+        return jsonify(student_data), 200
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        session.close()
 
 
 
