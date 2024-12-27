@@ -12,7 +12,7 @@ CORS(app)
 
 
 PG_DB_URL = os.getenv('PG_DATABASE_URL')
-
+print("This is the url ---------- ",PG_DB_URL)
 engine = create_engine(PG_DB_URL)
 Base.metadata.create_all(engine)
 
@@ -77,6 +77,10 @@ def get_all_bus():
 
 
 
+
+
+
+#! Add Routes
 
 @app.route('/add-organization', methods=['POST'])
 def add_organization():
