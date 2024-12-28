@@ -6,7 +6,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from orms import Base, Bus, Driver, Organization, Route, Student
 
-load_dotenv(dotenv_path='./sam.env')
+load_dotenv(dotenv_path='./pro.env')
 app = Flask(__name__)   
 CORS(app)
 
@@ -47,7 +47,6 @@ def add_organization():
     finally:
         session.close()
 
-
 @app.route('/get-organization-data/<string:id>', methods=['GET'])
 def get_organization_data(id):
     session = Session()
@@ -84,7 +83,6 @@ def get_organization_data(id):
         return jsonify(organization_data), 200
     else:
         return jsonify({"error": "Organization not found"}), 404
-
 
 
 
@@ -149,6 +147,61 @@ def add_route():
         return jsonify({"error": str(e)}), 500
     finally:
         session.close()
+
+@app.route('/delete-route', methods=['DELETE'])
+def delete_route():
+    data = request.get_json()
+    id = data.get('id')
+    organization_id = data.get('organization_id')  # Use .get() to handle missing keys gracefully
+
+    if not id or not organization_id:
+        return jsonify({"error": "Invalid input. 'id' and 'organization_id' are required."}), 400
+
+    with Session() as session:
+        try:
+            route = session.query(Route).filter_by(id=id, organization_id=organization_id).first()
+            if not route:
+                return jsonify({"error": "Route not found"}), 404
+
+            session.delete(route)
+            session.commit()
+            return jsonify({"message": "Route deleted successfully"}), 200
+
+        except Exception as e:
+            app.logger.error(f"Error deleting route: {e}")
+            return jsonify({"error": "An internal error occurred"}), 500
+
+@app.route('/update-route', methods=['PUT'])
+def update_route():
+    data = request.get_json()
+
+    id = data.get('id')
+    organization_id = data.get('organization_id')
+
+    if not id or not organization_id:
+        return jsonify({"error": "Invalid input. 'id' and 'organization_id' are required."}), 400
+    
+    with Session() as session:
+        try:
+            route = session.query(Route).filter_by(id=id, organization_id=organization_id).first()
+            if not route:
+                return jsonify({"error": "Route not found"}), 404
+
+            route.route_number = data.get('route_number', route.route_number)
+            route.route_name = data.get('route_name', route.route_name)
+            route.source = data.get('source', route.source)
+            route.destination = data.get('destination', route.destination)
+            route.stops = data.get('stops', route.stops)
+
+            session.commit()
+            return jsonify({"message": "Route updated successfully"}), 200
+
+        except Exception as e:
+            app.logger.error(f"Error updating route: {e}")
+            return jsonify({"error": "An internal error occurred"}), 500
+
+
+
 
 
 
@@ -217,8 +270,60 @@ def get_all_drivers():
     finally:
         session.close()
 
-   
+@app.route('/delete-driver', methods=['DELETE'])
+def delete_driver():
+    data = request.get_json()
+    id = data.get('id')
+    organization_id = data.get('organization_id')
+
+    if not id or not organization_id:
+        return jsonify({"error": "Invalid input. 'id' and 'organization_id' are required."}), 400
     
+    with Session() as session:
+        try:
+            driver = session.query(Driver).filter_by(id=id, organization_id=organization_id).first()
+            if not driver:
+                return jsonify({"error": "Driver not found"}), 404
+
+            session.delete(driver)
+            session.commit()
+            return jsonify({"message": "Driver deleted successfully"}), 200
+
+        except Exception as e:
+            app.logger.error(f"Error deleting driver: {e}")
+            return jsonify({"error": "An internal error occurred"}), 500
+   
+@app.route('/update-driver', methods=['PUT'])
+def update_driver():
+    data = request.get_json()
+
+    id = data.get('id')
+    organization_id = data.get('organization_id')
+
+    if not id or not organization_id:
+        return jsonify({"error": "Invalid input. 'id' and 'organization_id' are required."}), 400
+
+    with Session() as session:
+        try:
+            driver = session.query(Driver).filter_by(id=id, organization_id=organization_id).first()
+            if not driver:
+                return jsonify({"error": "Driver not found"}), 404
+
+            driver.driver_photo = data.get('driver_photo', driver.driver_photo)
+            driver.driver_name = data.get('driver_name', driver.driver_name)
+            driver.driver_phone = data.get('driver_phone', driver.driver_phone)
+            driver.driver_address = data.get('driver_address', driver.driver_address)
+            driver.driver_route = data.get('driver_route', driver.driver_route)
+            driver.driver_busnumber = data.get('driver_busnumber', driver.driver_busnumber)
+            driver.driver_salary = data.get('driver_salary', driver.driver_salary)
+            driver.status = data.get('status', driver.status)
+
+            session.commit()
+            return jsonify({"message": "Driver updated successfully"}), 200
+
+        except Exception as e:
+            app.logger.error(f"Error updating driver: {e}")
+            return jsonify({"error": "An internal error occurred"}), 500    
 
 
 
@@ -267,7 +372,6 @@ def add_bus():
     finally:
         session.close()
 
-
 @app.route('/get-all-bus', methods=['GET'])
 def get_all_bus():
     session = Session()
@@ -292,6 +396,63 @@ def get_all_bus():
         return jsonify({"error": str(e)}), 500
     finally:
         session.close()
+
+@app.route('/delete-bus', methods=['DELETE'])
+def delete_bus():
+    data = request.get_json()
+    id = data.get('id')
+    organization_id = data.get('organization_id')  # Use .get() to handle missing keys gracefully
+
+    if not id or not organization_id:
+        return jsonify({"error": "Invalid input. 'Bus id' and 'organization_id' are required."}), 400
+
+    with Session() as session:
+        try:
+            bus = session.query(Bus).filter_by(id=id, organization_id=organization_id).first()
+            if not bus:
+                return jsonify({"error": "Bus not found"}), 404
+
+            session.delete(bus)
+            session.commit()
+            return jsonify({"message": "Bus deleted successfully"}), 200
+
+        except Exception as e:
+            # Log the exception with additional context
+            app.logger.error(f"Error deleting bus with id {id} for organization {organization_id}: {e}")
+            return jsonify({"error": "An internal error occurred"}), 500
+
+@app.route('/update-bus', methods=['PUT'])
+def update_bus():
+    data = request.get_json()
+
+    id = data.get('id')
+    organization_id = data.get('organization_id')
+
+    if not id or not organization_id:
+        return jsonify({"error": "Invalid input. 'id' and 'organization_id' are required."}), 400
+
+    with Session() as session:
+        try:
+            bus = session.query(Bus).filter_by(id=id, organization_id=organization_id).first()
+            if not bus:
+                return jsonify({"error": "Bus not found"}), 404
+
+            bus.bus_number = data.get('bus_number', bus.bus_number)
+            bus.bus_seats = data.get('bus_seats', bus.bus_seats)
+            bus.bus_route = data.get('bus_route', bus.bus_route)
+            bus.driver_name = data.get('driver_name', bus.driver_name)
+            bus.driver_phone = data.get('driver_phone', bus.driver_phone)
+            bus.register_numberplate = data.get('register_numberplate', bus.register_numberplate)
+            bus.status = data.get('status', bus.status)
+            bus.shift = data.get('shift', bus.shift)
+            bus.time = data.get('time', bus.time)
+
+            session.commit()
+            return jsonify({"message": "Bus updated successfully"}), 200
+
+        except Exception as e:
+            app.logger.error(f"Error updating bus: {e}")
+            return jsonify({"error": "An internal error occurred"}), 500
 
 
 
@@ -382,8 +543,63 @@ def get_all_students():
     finally:
         session.close()
 
+@app.route('/delete-student', methods=['DELETE'])
+def delete_student():
+    data = request.get_json()
+    id = data.get('id')
+    organization_id = data.get('organization_id')
 
+    if not id or not organization_id:
+        return jsonify({"error": "Invalid input. 'id' and 'organization_id' are required."}), 400
+    
+    with Session() as session:
+        try:
+            student = session.query(Student).filter_by(id=id, organization_id=organization_id).first()
+            if not student:
+                return jsonify({"error": "Student not found"}), 404
 
+            session.delete(student)
+            session.commit()
+            return jsonify({"message": "Student deleted successfully"}), 200
+
+        except Exception as e:
+            app.logger.error(f"Error deleting student: {e}")
+            return jsonify({"error": "An internal error occurred"}), 500
+
+@app.route('/update-student', methods=['PUT'])
+def update_student():
+    data = request.get_json()
+
+    id = data.get('id')
+    organization_id = data.get('organization_id')
+
+    if not id or not organization_id:
+        return jsonify({"error": "Invalid input. 'id' and 'organization_id' are required."}), 400
+
+    with Session() as session:
+        try:
+            student = session.query(Student).filter_by(id=id, organization_id=organization_id).first()
+            if not student:
+                return jsonify({"error": "Student not found"}), 404
+
+            student.photo = data.get('photo', student.photo)
+            student.enrollment_number = data.get('enrollment_number', student.enrollment_number)
+            student.student_name = data.get('student_name', student.student_name)
+            student.student_phone = data.get('student_phone', student.student_phone)
+            student.bus_number = data.get('bus_number', student.bus_number)
+            student.route = data.get('route', student.route)
+            student.student_address = data.get('student_address', student.student_address)
+            student.busfee = data.get('busfee', student.busfee)
+            student.student_class = data.get('student_class', student.student_class)
+            student.status = data.get('status', student.status)
+            student.email = data.get('email', student.email)
+
+            session.commit()
+            return jsonify({"message": "Student updated successfully"}), 200
+
+        except Exception as e:
+            app.logger.error(f"Error updating student: {e}")
+            return jsonify({"error": "An internal error occurred"}), 500
 
 
 
