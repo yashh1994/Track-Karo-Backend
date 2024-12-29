@@ -454,6 +454,32 @@ def update_bus():
             app.logger.error(f"Error updating bus: {e}")
             return jsonify({"error": "An internal error occurred"}), 500
 
+@app.route('/get-bus-from-route',methods=['GET'])
+def get_bus_from_route():
+    data = request.get_json()
+
+    route_number = data.get('route_number')
+    organization_id = data.get('organization_id')
+
+    if not route_number or not organization_id:
+        return jsonify({"error": "Invalid input. 'route_number' and 'organization_id' are required."}), 400
+    
+    with Session() as session:
+        try:
+            buses = session.query(Bus).filter_by(bus_route=route_number, organization_id=organization_id).all()
+            if not buses:
+                return jsonify({"error": "Bus not found"}), 404
+            
+            bus_data = [bus.to_json() for bus in buses]
+
+            return jsonify(bus_data), 200
+
+        except Exception as e:
+            app.logger.error(f"Error getting bus: {e}")
+            return jsonify({"error": "An internal error occurred"}), 500
+
+
+
 
 
 
@@ -601,7 +627,62 @@ def update_student():
             app.logger.error(f"Error updating student: {e}")
             return jsonify({"error": "An internal error occurred"}), 500
 
+@app.route('/get-details-from-student',methods=['GET'])
+def get_details_from_student():
+    data = request.get_json()
 
+    student_id = data.get('student_id')
+    organization_id = data.get('organization_id')
+
+    if not student_id or not organization_id:
+        return jsonify({"error": "Invalid input. 'student_id' and 'organization_id' are required."}), 400
+    
+    with Session() as session:
+        try:
+            student = session.query(Student).filter_by(id=student_id, organization_id=organization_id).first()
+            if not student:
+                return jsonify({"error": "Student not found"}), 404
+            
+            bus_number = student.bus_number
+            route_number = student.route
+            
+            route = session.query(Route).filter_by(route_number=route_number, organization_id=organization_id).first()
+            driver = session.query(Driver).filter_by(driver_busnumber=bus_number, driver_route=route_number,organization_id=organization_id).first()
+            bus = session.query(Bus).filter_by(bus_number=bus_number, bus_route=route_number, organization_id=organization_id).first()
+
+
+            student_data = {
+                "route_details": {
+                    "route_number": route.route_number if route and route.route_number else "Unknown",
+                    "route_name": route.route_name if route and route.route_name else "Unknown",
+                    "source": route.source if route and route.source else "Unknown",
+                    "destination": route.destination if route and route.destination else "Unknown",
+                    "stops": route.stops if route and route.stops else "Unknown"
+                },
+                "driver_details": {
+                    "driver_photo": driver.driver_photo if driver and driver.driver_photo else "Unknown",
+                    "driver_name": driver.driver_name if driver and driver.driver_name else "Unknown",
+                    "driver_phone": driver.driver_phone if driver and driver.driver_phone else "Unknown",
+                    "driver_status": driver.status if driver and driver.status else "Unknown",
+                    "bus_number": driver.driver_busnumber if driver and driver.driver_busnumber else "Unknown",
+                    "shift": bus.shift if bus and bus.shift else "Unknown",
+                    "time": bus.time if bus and bus.time else "Unknown"
+                },
+                "student_details": {
+                    "student_name": student.student_name if student and student.student_name else "Unknown",
+                    "student_phone": student.student_phone if student and student.student_phone else "Unknown",
+                    "student_address": student.student_address if student and student.student_address else "Unknown",
+                    "busfee": student.busfee if student and student.busfee else "Unknown",
+                    "student_class": student.student_class if student and student.student_class else "Unknown",
+                    "email": student.email if student and student.email else "Unknown"
+                }
+            }
+
+            return jsonify(student_data), 200
+
+        except Exception as e:
+            app.logger.error(f"Error getting student: {e}")
+            return jsonify({"error": "An internal error occurred"}), 500
 
 
 
