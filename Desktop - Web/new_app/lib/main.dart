@@ -12,8 +12,10 @@ import 'update_details_page.dart'; // Import UpdateDetailsPage
 import 'package:provider/provider.dart';
 import 'pie_chart_data_model.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+void main() async {
+  await dotenv.load(fileName: "pro.env");
   setUrlStrategy(PathUrlStrategy());
   runApp(MyApp());
 }
