@@ -3,6 +3,7 @@ import 'dart:convert'; // For JSON encoding/decoding
 import 'package:http/http.dart' as http;
 import 'package:new_app/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() {
   runApp(LoginPage());
@@ -50,8 +51,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       // Send POST request
+      print("THis is the request url: ${dotenv.env['BACKEND_API']}");
       final response = await http.post(
-        Uri.parse('http://localhost:5000/login-organization'),
+        Uri.parse('${dotenv.env['BACKEND_API']}/login-organization'),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({"email": email, "password": password}),
       );
