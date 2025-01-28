@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:new_app/login_page.dart';
 import 'package:new_app/manage_driver_page.dart';
 import 'package:new_app/on_route_page.dart';
 import 'package:new_app/out_of_service_page.dart';
 import 'package:new_app/standby_page.dart';
 import 'package:new_app/live_tracking_page.dart'; // Import LiveTrackingPage
 import 'package:new_app/update_details_page.dart'; // Import UpdateDetailsPage
+import 'package:shared_preferences/shared_preferences.dart';
 import 'busdetail_page.dart';
 import 'student_detail_page.dart';
 import 'custom_clickable_pie_chart.dart';
@@ -29,6 +31,27 @@ class HomePage extends StatelessWidget {
     Color sideBarColor = Colors.black; // Set sidebar background color to black
     Color appBarColor = Color(0xFF03B0C1); // App bar color
 
+    void _popUntilLogin(BuildContext context) {
+      Navigator.of(context).popUntil((route) => route.isFirst);
+      Navigator.pushReplacementNamed(context, '/login');
+    }
+
+    void _checkToken(BuildContext context) async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString('token');
+
+      if (token == null || token.isEmpty) {
+        _popUntilLogin(context);
+      }
+    }
+
+    @override
+    void initState() {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _checkToken(context);
+      });
+    }
+
     return Scaffold(
       key: _scaffoldKey,
       endDrawer: UserDetailsDrawer(),
@@ -47,7 +70,6 @@ class HomePage extends StatelessWidget {
                     height: 100,
                   ),
                 ),
-
                 SizedBox(height: 20),
                 _buildLink(
                   context: context,
@@ -76,7 +98,8 @@ class HomePage extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ManageDriverPage()),
+                      MaterialPageRoute(
+                          builder: (context) => ManageDriverPage()),
                     );
                   },
                   icon: Icons.person,
@@ -87,7 +110,8 @@ class HomePage extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => LiveTrackingPage()),
+                      MaterialPageRoute(
+                          builder: (context) => LiveTrackingPage()),
                     );
                   },
                   icon: Icons.map,
@@ -98,7 +122,8 @@ class HomePage extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => StudentDetailPage()),
+                      MaterialPageRoute(
+                          builder: (context) => StudentDetailPage()),
                     );
                   },
                   icon: Icons.school,
@@ -109,13 +134,13 @@ class HomePage extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => UpdateDetailsPage()),
+                      MaterialPageRoute(
+                          builder: (context) => UpdateDetailsPage()),
                     );
                   },
                   icon: Icons.location_on,
                   label: 'Live Tracking',
                 ),
-
               ],
             ),
           ),
@@ -126,7 +151,8 @@ class HomePage extends StatelessWidget {
                   height: 60, // Set the height for the app bar section
                   color: appBarColor, // Set app bar color
                   child: AppBar(
-                    automaticallyImplyLeading: false, // Remove default back button
+                    automaticallyImplyLeading:
+                        false, // Remove default back button
                     title: Text(
                       'Trackkaro',
                       style: TextStyle(
@@ -169,7 +195,9 @@ class HomePage extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        SizedBox(height: 40), // Add space between navigation bar and buttons
+                        SizedBox(
+                            height:
+                                40), // Add space between navigation bar and buttons
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
@@ -179,7 +207,8 @@ class HomePage extends StatelessWidget {
                                 onPressed: () {
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => BusDetailPage()),
+                                    MaterialPageRoute(
+                                        builder: (context) => BusDetailPage()),
                                   );
                                 },
                                 icon: Icons.directions_bus,
@@ -193,10 +222,11 @@ class HomePage extends StatelessWidget {
                                 context: context,
                                 onPressed: () {
                                   Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => LiveTrackingPage()),
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            LiveTrackingPage()),
                                   );
-
                                 },
                                 icon: Icons.map,
                                 label: 'Set Route',
@@ -210,7 +240,9 @@ class HomePage extends StatelessWidget {
                                 onPressed: () {
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => StudentDetailPage()),
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            StudentDetailPage()),
                                   );
                                 },
                                 icon: Icons.school,
@@ -225,7 +257,9 @@ class HomePage extends StatelessWidget {
                                 onPressed: () {
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => UpdateDetailsPage()),
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            UpdateDetailsPage()),
                                   );
                                 },
                                 icon: Icons.location_on,
@@ -236,12 +270,16 @@ class HomePage extends StatelessWidget {
                             ),
                           ],
                         ),
-                        SizedBox(height: 80), // Increased space between the buttons and pie chart
+                        SizedBox(
+                            height:
+                                80), // Increased space between the buttons and pie chart
                         Container(
                           margin: EdgeInsets.all(20),
                           child: SizedBox(
-                            width: 1000, // Set the width of the pie chart container
-                            height: 800, // Set the height of the pie chart container
+                            width:
+                                1000, // Set the width of the pie chart container
+                            height:
+                                800, // Set the height of the pie chart container
                             child: CustomClickablePieChart(
                               dataMap: dataMap,
                               colorList: colorList,
@@ -249,17 +287,22 @@ class HomePage extends StatelessWidget {
                                 if (selectedSegment == 'On Route') {
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => OnRoutePage()),
+                                    MaterialPageRoute(
+                                        builder: (context) => OnRoutePage()),
                                   );
                                 } else if (selectedSegment == 'Standby') {
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => StandbyPage()),
+                                    MaterialPageRoute(
+                                        builder: (context) => StandbyPage()),
                                   );
-                                } else if (selectedSegment == 'Out of Service') {
+                                } else if (selectedSegment ==
+                                    'Out of Service') {
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => OutOfServicePage()),
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            OutOfServicePage()),
                                   );
                                 }
                               },
@@ -335,10 +378,12 @@ class HomePage extends StatelessWidget {
     required Color borderColor,
   }) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20), // Add horizontal margin for spacing
+      margin: EdgeInsets.symmetric(
+          vertical: 10, horizontal: 20), // Add horizontal margin for spacing
       decoration: BoxDecoration(
         color: color,
-        borderRadius: BorderRadius.circular(50), // Adjusted border radius for thinner buttons
+        borderRadius: BorderRadius.circular(
+            50), // Adjusted border radius for thinner buttons
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
@@ -350,19 +395,21 @@ class HomePage extends StatelessWidget {
       ),
       child: ElevatedButton.icon(
         onPressed: onPressed,
-        icon: Icon(icon, size: 50, color: Color(0xFF03B0C1)), // Increased icon size for larger button
+        icon: Icon(icon,
+            size: 50,
+            color: Color(0xFF03B0C1)), // Increased icon size for larger button
         label: Text(
           label,
           style: TextStyle(
               fontSize: 20, // Increased font size for larger button
-              color: Color(0xFF03B0C1)
-
-          ),
+              color: Color(0xFF03B0C1)),
         ),
 
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
-          padding: EdgeInsets.symmetric(vertical: 60, horizontal: 60),  // Adjusted padding for larger button
+          padding: EdgeInsets.symmetric(
+              vertical: 60,
+              horizontal: 60), // Adjusted padding for larger button
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(50),
           ),
@@ -416,8 +463,14 @@ class UserDetailsDrawer extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.logout),
             title: Text('Logout'),
-            onTap: () {
-              // Handle logout tap
+            onTap: () async {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              await prefs.remove('token');
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => LoginPage()),
+                (Route<dynamic> route) => false,
+              );
             },
           ),
         ],
@@ -425,7 +478,3 @@ class UserDetailsDrawer extends StatelessWidget {
     );
   }
 }
-
-
-
-

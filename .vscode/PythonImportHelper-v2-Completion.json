@@ -1,0 +1,527 @@
+[
+    {
+        "label": "urlparse",
+        "importPath": "urllib.parse",
+        "description": "urllib.parse",
+        "isExtraImport": true,
+        "detail": "urllib.parse",
+        "documentation": {}
+    },
+    {
+        "label": "Column",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "Integer",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "String",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "ForeignKey",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "Boolean",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "create_engine",
+        "importPath": "sqlalchemy",
+        "description": "sqlalchemy",
+        "isExtraImport": true,
+        "detail": "sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "declarative_base",
+        "importPath": "sqlalchemy.ext.declarative",
+        "description": "sqlalchemy.ext.declarative",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.ext.declarative",
+        "documentation": {}
+    },
+    {
+        "label": "ARRAY",
+        "importPath": "sqlalchemy.dialects.postgresql",
+        "description": "sqlalchemy.dialects.postgresql",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.dialects.postgresql",
+        "documentation": {}
+    },
+    {
+        "label": "JSONB",
+        "importPath": "sqlalchemy.dialects.postgresql",
+        "description": "sqlalchemy.dialects.postgresql",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.dialects.postgresql",
+        "documentation": {}
+    },
+    {
+        "label": "relationship",
+        "importPath": "sqlalchemy.orm",
+        "description": "sqlalchemy.orm",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.orm",
+        "documentation": {}
+    },
+    {
+        "label": "sessionmaker",
+        "importPath": "sqlalchemy.orm",
+        "description": "sqlalchemy.orm",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.orm",
+        "documentation": {}
+    },
+    {
+        "label": "Flask",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "request",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "jsonify",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "CORS",
+        "importPath": "flask_cors",
+        "description": "flask_cors",
+        "isExtraImport": true,
+        "detail": "flask_cors",
+        "documentation": {}
+    },
+    {
+        "label": "load_dotenv",
+        "importPath": "dotenv",
+        "description": "dotenv",
+        "isExtraImport": true,
+        "detail": "dotenv",
+        "documentation": {}
+    },
+    {
+        "label": "load_dotenv",
+        "importPath": "dotenv",
+        "description": "dotenv",
+        "isExtraImport": true,
+        "detail": "dotenv",
+        "documentation": {}
+    },
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "Base",
+        "importPath": "orms",
+        "description": "orms",
+        "isExtraImport": true,
+        "detail": "orms",
+        "documentation": {}
+    },
+    {
+        "label": "Bus",
+        "importPath": "orms",
+        "description": "orms",
+        "isExtraImport": true,
+        "detail": "orms",
+        "documentation": {}
+    },
+    {
+        "label": "Driver",
+        "importPath": "orms",
+        "description": "orms",
+        "isExtraImport": true,
+        "detail": "orms",
+        "documentation": {}
+    },
+    {
+        "label": "Organization",
+        "importPath": "orms",
+        "description": "orms",
+        "isExtraImport": true,
+        "detail": "orms",
+        "documentation": {}
+    },
+    {
+        "label": "Route",
+        "importPath": "orms",
+        "description": "orms",
+        "isExtraImport": true,
+        "detail": "orms",
+        "documentation": {}
+    },
+    {
+        "label": "Student",
+        "importPath": "orms",
+        "description": "orms",
+        "isExtraImport": true,
+        "detail": "orms",
+        "documentation": {}
+    },
+    {
+        "label": "PG_DATABASE_URL",
+        "kind": 5,
+        "importPath": "Backend.neon",
+        "description": "Backend.neon",
+        "peekOfCode": "PG_DATABASE_URL = \"postgresql://sample_owner:WOZeSL36uvPi@ep-silent-silence-a5kzvrq2.us-east-2.aws.neon.tech/sample?sslmode=require\"\n# Replace the DATABASES section of your settings.py with this\ntmpPostgres = urlparse(PG_DATABASE_URL)\nDATABASES = {\n    'default': {\n        'ENGINE': 'django.db.backends.postgresql',\n        'NAME': tmpPostgres.path.replace('/', ''),\n        'USER': tmpPostgres.username,\n        'PASSWORD': tmpPostgres.password,\n        'HOST': tmpPostgres.hostname,",
+        "detail": "Backend.neon",
+        "documentation": {}
+    },
+    {
+        "label": "tmpPostgres",
+        "kind": 5,
+        "importPath": "Backend.neon",
+        "description": "Backend.neon",
+        "peekOfCode": "tmpPostgres = urlparse(PG_DATABASE_URL)\nDATABASES = {\n    'default': {\n        'ENGINE': 'django.db.backends.postgresql',\n        'NAME': tmpPostgres.path.replace('/', ''),\n        'USER': tmpPostgres.username,\n        'PASSWORD': tmpPostgres.password,\n        'HOST': tmpPostgres.hostname,\n        'PORT': 5432,\n    }",
+        "detail": "Backend.neon",
+        "documentation": {}
+    },
+    {
+        "label": "DATABASES",
+        "kind": 5,
+        "importPath": "Backend.neon",
+        "description": "Backend.neon",
+        "peekOfCode": "DATABASES = {\n    'default': {\n        'ENGINE': 'django.db.backends.postgresql',\n        'NAME': tmpPostgres.path.replace('/', ''),\n        'USER': tmpPostgres.username,\n        'PASSWORD': tmpPostgres.password,\n        'HOST': tmpPostgres.hostname,\n        'PORT': 5432,\n    }\n}",
+        "detail": "Backend.neon",
+        "documentation": {}
+    },
+    {
+        "label": "Organization",
+        "kind": 6,
+        "importPath": "Backend.orms",
+        "description": "Backend.orms",
+        "peekOfCode": "class Organization(Base):\n    __tablename__ = 'Organization'\n    id = Column(Integer, primary_key=True)\n    email = Column(String, unique=True, nullable=False)\n    password = Column(String, nullable=False)\n    institute_name = Column(String, nullable=True)\n    routes = relationship(\"Route\", back_populates=\"organization\", cascade=\"all, delete-orphan\")\n    buses = relationship(\"Bus\", back_populates=\"organization\", cascade=\"all, delete-orphan\")\n    drivers = relationship(\"Driver\", back_populates=\"organization\", cascade=\"all, delete-orphan\")\n    students = relationship(\"Student\", back_populates=\"organization\", cascade=\"all, delete-orphan\")",
+        "detail": "Backend.orms",
+        "documentation": {}
+    },
+    {
+        "label": "Route",
+        "kind": 6,
+        "importPath": "Backend.orms",
+        "description": "Backend.orms",
+        "peekOfCode": "class Route(Base):\n    __tablename__ = 'Route'\n    id = Column(Integer,primary_key = True)\n    route_number = Column(String,nullable=False)\n    route_name = Column(String,nullable=False)\n    source= Column(String,nullable=False)\n    destination = Column(String,nullable=False)\n    stops = Column(ARRAY(String),nullable=False)\n    organization_id = Column(Integer, ForeignKey('Organization.id'), nullable=False)\n    organization = relationship(\"Organization\", back_populates=\"routes\")",
+        "detail": "Backend.orms",
+        "documentation": {}
+    },
+    {
+        "label": "Driver",
+        "kind": 6,
+        "importPath": "Backend.orms",
+        "description": "Backend.orms",
+        "peekOfCode": "class Driver(Base):\n    __tablename__ = 'Driver'\n    id = Column(Integer, primary_key=True)\n    driver_photo = Column(String, nullable=True)\n    driver_name = Column(String, nullable=False)\n    driver_phone = Column(String, nullable=False)\n    driver_address = Column(String, nullable=False)\n    driver_route = Column(String, nullable=True)\n    driver_busnumber = Column(String, nullable=True)\n    driver_salary = Column(String, nullable=True)",
+        "detail": "Backend.orms",
+        "documentation": {}
+    },
+    {
+        "label": "Bus",
+        "kind": 6,
+        "importPath": "Backend.orms",
+        "description": "Backend.orms",
+        "peekOfCode": "class Bus(Base):\n    __tablename__ = 'Bus'\n    id = Column(Integer, primary_key=True)\n    bus_number = Column(String, nullable=False)\n    bus_seats = Column(String, nullable=False)\n    bus_route = Column(String, nullable=False)\n    driver_name = Column(String, nullable=True)\n    driver_phone = Column(String, nullable=True)\n    register_numberplate = Column(String, nullable=False)\n    status = Column(Boolean, nullable=False)",
+        "detail": "Backend.orms",
+        "documentation": {}
+    },
+    {
+        "label": "Student",
+        "kind": 6,
+        "importPath": "Backend.orms",
+        "description": "Backend.orms",
+        "peekOfCode": "class Student(Base):\n    __tablename__ = \"Student\"\n    id = Column(Integer, primary_key=True)\n    photo = Column(String, nullable=True)\n    enrollment_number = Column(String, nullable=False)\n    student_name = Column(String, nullable=False)\n    student_phone = Column(String, nullable=False)\n    bus_number = Column(String, nullable=False)\n    route = Column(String, nullable=False)\n    student_address = Column(String, nullable=False)",
+        "detail": "Backend.orms",
+        "documentation": {}
+    },
+    {
+        "label": "Base",
+        "kind": 5,
+        "importPath": "Backend.orms",
+        "description": "Backend.orms",
+        "peekOfCode": "Base = declarative_base()\nclass Organization(Base):\n    __tablename__ = 'Organization'\n    id = Column(Integer, primary_key=True)\n    email = Column(String, unique=True, nullable=False)\n    password = Column(String, nullable=False)\n    institute_name = Column(String, nullable=True)\n    routes = relationship(\"Route\", back_populates=\"organization\", cascade=\"all, delete-orphan\")\n    buses = relationship(\"Bus\", back_populates=\"organization\", cascade=\"all, delete-orphan\")\n    drivers = relationship(\"Driver\", back_populates=\"organization\", cascade=\"all, delete-orphan\")",
+        "detail": "Backend.orms",
+        "documentation": {}
+    },
+    {
+        "label": "add_organization",
+        "kind": 2,
+        "importPath": "Backend.routes",
+        "description": "Backend.routes",
+        "peekOfCode": "def add_organization():\n    data = request.get_json()\n    organization_name = data['institute_name']\n    organization_email = data['email']\n    organization_password = data['password']\n    new_organization = Organization(\n        institute_name=organization_name,\n        email=organization_email,\n        password=organization_password\n    )",
+        "detail": "Backend.routes",
+        "documentation": {}
+    },
+    {
+        "label": "get_organization_data",
+        "kind": 2,
+        "importPath": "Backend.routes",
+        "description": "Backend.routes",
+        "peekOfCode": "def get_organization_data(id):\n    session = Session()\n    organization = session.query(Organization).filter_by(id=id).first()\n    organization_buses = session.query(Bus).filter_by(organization_id=id).all()\n    organization_routes = session.query(Route).filter_by(organization_id=id).all()\n    organization_drivers = session.query(Driver).filter_by(organization_id=id).all()\n    organization_students = session.query(Student).filter_by(organization_id=id).all()\n    if not organization:\n        return jsonify({\"error\": \"Organization not found\"}), 404\n    organization_data = {",
+        "detail": "Backend.routes",
+        "documentation": {}
+    },
+    {
+        "label": "login_organization",
+        "kind": 2,
+        "importPath": "Backend.routes",
+        "description": "Backend.routes",
+        "peekOfCode": "def login_organization():\n    data = request.get_json()\n    email = data.get('email')\n    password = data.get('password')\n    if not email or not password:\n        return jsonify({\"error\": \"Invalid input. 'email' and 'password' are required.\"}), 400\n    session = Session()\n    try:\n        organization = session.query(Organization).filter_by(email=email, password=password).first()\n        if not organization:",
+        "detail": "Backend.routes",
+        "documentation": {}
+    },
+    {
+        "label": "get_all_routes",
+        "kind": 2,
+        "importPath": "Backend.routes",
+        "description": "Backend.routes",
+        "peekOfCode": "def get_all_routes():\n    session = Session()\n    try:\n        data = request.get_json()\n        organization_id = data.get('organization_id', None)\n        if organization_id is None:\n            return jsonify({\"error\": \"organization_id is required as a query parameter\"}), 400\n        routes = session.query(Route).filter_by(organization_id=organization_id).all()\n        if not routes:\n            return jsonify({\"error\": \"No routes found for the given organization_id\"}), 404",
+        "detail": "Backend.routes",
+        "documentation": {}
+    },
+    {
+        "label": "add_route",
+        "kind": 2,
+        "importPath": "Backend.routes",
+        "description": "Backend.routes",
+        "peekOfCode": "def add_route():\n    # Get data from the request body (assumed to be JSON)\n    data = request.get_json()\n    # Extract data from the request\n    route_number = data['route_number']\n    route_name = data['route_name']\n    source = data['source']\n    destination = data['destination']\n    stops = data['stops'] \n    organization_id = data['organization_id']",
+        "detail": "Backend.routes",
+        "documentation": {}
+    },
+    {
+        "label": "delete_route",
+        "kind": 2,
+        "importPath": "Backend.routes",
+        "description": "Backend.routes",
+        "peekOfCode": "def delete_route():\n    data = request.get_json()\n    id = data.get('id')\n    organization_id = data.get('organization_id')  # Use .get() to handle missing keys gracefully\n    if not id or not organization_id:\n        return jsonify({\"error\": \"Invalid input. 'id' and 'organization_id' are required.\"}), 400\n    with Session() as session:\n        try:\n            route = session.query(Route).filter_by(id=id, organization_id=organization_id).first()\n            if not route:",
+        "detail": "Backend.routes",
+        "documentation": {}
+    },
+    {
+        "label": "update_route",
+        "kind": 2,
+        "importPath": "Backend.routes",
+        "description": "Backend.routes",
+        "peekOfCode": "def update_route():\n    data = request.get_json()\n    id = data.get('id')\n    organization_id = data.get('organization_id')\n    if not id or not organization_id:\n        return jsonify({\"error\": \"Invalid input. 'id' and 'organization_id' are required.\"}), 400\n    with Session() as session:\n        try:\n            route = session.query(Route).filter_by(id=id, organization_id=organization_id).first()\n            if not route:",
+        "detail": "Backend.routes",
+        "documentation": {}
+    },
+    {
+        "label": "add_driver",
+        "kind": 2,
+        "importPath": "Backend.routes",
+        "description": "Backend.routes",
+        "peekOfCode": "def add_driver():\n    data = request.get_json()\n    driver_photo = data.get('driver_photo')\n    driver_name = data['driver_name']\n    driver_phone = data['driver_phone']\n    driver_address = data['driver_address']\n    driver_route = data.get('driver_route')\n    driver_busnumber = data.get('driver_busnumber')\n    organization_id = data['organization_id']\n    driver_salary = data.get('driver_salary')",
+        "detail": "Backend.routes",
+        "documentation": {}
+    },
+    {
+        "label": "get_all_drivers",
+        "kind": 2,
+        "importPath": "Backend.routes",
+        "description": "Backend.routes",
+        "peekOfCode": "def get_all_drivers():\n    data = request.get_json()\n    try:\n        organization_id = data.get('organization_id', None)\n        if organization_id is None:\n            return jsonify({\"error\": \"organization_id is required as a query parameter\"}), 400\n        session = Session()\n        drivers = session.query(Driver).filter_by(organization_id=organization_id).all()\n        if not drivers:\n            return jsonify({\"error\": \"No drivers found for the given organization_id\"}), 404",
+        "detail": "Backend.routes",
+        "documentation": {}
+    },
+    {
+        "label": "delete_driver",
+        "kind": 2,
+        "importPath": "Backend.routes",
+        "description": "Backend.routes",
+        "peekOfCode": "def delete_driver():\n    data = request.get_json()\n    id = data.get('id')\n    organization_id = data.get('organization_id')\n    if not id or not organization_id:\n        return jsonify({\"error\": \"Invalid input. 'id' and 'organization_id' are required.\"}), 400\n    with Session() as session:\n        try:\n            driver = session.query(Driver).filter_by(id=id, organization_id=organization_id).first()\n            if not driver:",
+        "detail": "Backend.routes",
+        "documentation": {}
+    },
+    {
+        "label": "update_driver",
+        "kind": 2,
+        "importPath": "Backend.routes",
+        "description": "Backend.routes",
+        "peekOfCode": "def update_driver():\n    data = request.get_json()\n    id = data.get('id')\n    organization_id = data.get('organization_id')\n    if not id or not organization_id:\n        return jsonify({\"error\": \"Invalid input. 'id' and 'organization_id' are required.\"}), 400\n    with Session() as session:\n        try:\n            driver = session.query(Driver).filter_by(id=id, organization_id=organization_id).first()\n            if not driver:",
+        "detail": "Backend.routes",
+        "documentation": {}
+    },
+    {
+        "label": "add_bus",
+        "kind": 2,
+        "importPath": "Backend.routes",
+        "description": "Backend.routes",
+        "peekOfCode": "def add_bus():\n    data = request.get_json()\n    bus_number = data['bus_number']\n    bus_seats = data['bus_seats']\n    bus_route = data['bus_route']\n    driver_name = data.get('driver_name')\n    driver_phone = data.get('driver_phone')\n    register_numberplate = data['register_numberplate']\n    status = data['status']\n    shift = data['shift']",
+        "detail": "Backend.routes",
+        "documentation": {}
+    },
+    {
+        "label": "get_all_bus",
+        "kind": 2,
+        "importPath": "Backend.routes",
+        "description": "Backend.routes",
+        "peekOfCode": "def get_all_bus():\n    session = Session()\n    try:\n        data = request.get_json()\n        organization_id = data.get('organization_id', None)\n        if organization_id is None:\n            return jsonify({\"error\": \"organization_id is required as a query parameter\"}), 400\n        buses = session.query(Bus).filter_by(organization_id=organization_id).all()\n        if not buses:\n            return jsonify({\"error\": \"No buses found for the given organization_id\"}), 404",
+        "detail": "Backend.routes",
+        "documentation": {}
+    },
+    {
+        "label": "delete_bus",
+        "kind": 2,
+        "importPath": "Backend.routes",
+        "description": "Backend.routes",
+        "peekOfCode": "def delete_bus():\n    data = request.get_json()\n    id = data.get('id')\n    organization_id = data.get('organization_id')  # Use .get() to handle missing keys gracefully\n    if not id or not organization_id:\n        return jsonify({\"error\": \"Invalid input. 'Bus id' and 'organization_id' are required.\"}), 400\n    with Session() as session:\n        try:\n            bus = session.query(Bus).filter_by(id=id, organization_id=organization_id).first()\n            if not bus:",
+        "detail": "Backend.routes",
+        "documentation": {}
+    },
+    {
+        "label": "update_bus",
+        "kind": 2,
+        "importPath": "Backend.routes",
+        "description": "Backend.routes",
+        "peekOfCode": "def update_bus():\n    data = request.get_json()\n    id = data.get('id')\n    organization_id = data.get('organization_id')\n    if not id or not organization_id:\n        return jsonify({\"error\": \"Invalid input. 'id' and 'organization_id' are required.\"}), 400\n    with Session() as session:\n        try:\n            bus = session.query(Bus).filter_by(id=id, organization_id=organization_id).first()\n            if not bus:",
+        "detail": "Backend.routes",
+        "documentation": {}
+    },
+    {
+        "label": "get_bus_from_route",
+        "kind": 2,
+        "importPath": "Backend.routes",
+        "description": "Backend.routes",
+        "peekOfCode": "def get_bus_from_route():\n    data = request.get_json()\n    route_number = data.get('route_number')\n    organization_id = data.get('organization_id')\n    if not route_number or not organization_id:\n        return jsonify({\"error\": \"Invalid input. 'route_number' and 'organization_id' are required.\"}), 400\n    with Session() as session:\n        try:\n            buses = session.query(Bus).filter_by(bus_route=route_number, organization_id=organization_id).all()\n            if not buses:",
+        "detail": "Backend.routes",
+        "documentation": {}
+    },
+    {
+        "label": "add_student",
+        "kind": 2,
+        "importPath": "Backend.routes",
+        "description": "Backend.routes",
+        "peekOfCode": "def add_student():\n    data = request.get_json()\n    if not data:\n        return jsonify({\"error\": \"Invalid data provided\"}), 400\n    session = Session()\n    try:\n        # Extract data from the JSON payload\n        photo = data.get('photo', None)\n        enrollment_number = data.get('enrollment_number')\n        student_name = data.get('student_name')",
+        "detail": "Backend.routes",
+        "documentation": {}
+    },
+    {
+        "label": "get_all_students",
+        "kind": 2,
+        "importPath": "Backend.routes",
+        "description": "Backend.routes",
+        "peekOfCode": "def get_all_students():\n    data = request.get_json()\n    try:\n        organization_id = data.get('organization_id', None)\n        if organization_id is None:\n            return jsonify({\"error\": \"organization_id is required as a query parameter\"}), 400\n        session = Session()\n        students = session.query(Student).filter_by(organization_id=organization_id).all()\n        if not students:\n            return jsonify({\"error\": \"No students found for the given organization_id\"}), 404",
+        "detail": "Backend.routes",
+        "documentation": {}
+    },
+    {
+        "label": "delete_student",
+        "kind": 2,
+        "importPath": "Backend.routes",
+        "description": "Backend.routes",
+        "peekOfCode": "def delete_student():\n    data = request.get_json()\n    id = data.get('id')\n    organization_id = data.get('organization_id')\n    if not id or not organization_id:\n        return jsonify({\"error\": \"Invalid input. 'id' and 'organization_id' are required.\"}), 400\n    with Session() as session:\n        try:\n            student = session.query(Student).filter_by(id=id, organization_id=organization_id).first()\n            if not student:",
+        "detail": "Backend.routes",
+        "documentation": {}
+    },
+    {
+        "label": "update_student",
+        "kind": 2,
+        "importPath": "Backend.routes",
+        "description": "Backend.routes",
+        "peekOfCode": "def update_student():\n    data = request.get_json()\n    id = data.get('id')\n    organization_id = data.get('organization_id')\n    if not id or not organization_id:\n        return jsonify({\"error\": \"Invalid input. 'id' and 'organization_id' are required.\"}), 400\n    with Session() as session:\n        try:\n            student = session.query(Student).filter_by(id=id, organization_id=organization_id).first()\n            if not student:",
+        "detail": "Backend.routes",
+        "documentation": {}
+    },
+    {
+        "label": "get_details_from_student",
+        "kind": 2,
+        "importPath": "Backend.routes",
+        "description": "Backend.routes",
+        "peekOfCode": "def get_details_from_student():\n    data = request.get_json()\n    student_id = data.get('student_id')\n    organization_id = data.get('organization_id')\n    if not student_id or not organization_id:\n        return jsonify({\"error\": \"Invalid input. 'student_id' and 'organization_id' are required.\"}), 400\n    with Session() as session:\n        try:\n            student = session.query(Student).filter_by(id=student_id, organization_id=organization_id).first()\n            if not student:",
+        "detail": "Backend.routes",
+        "documentation": {}
+    },
+    {
+        "label": "test_route",
+        "kind": 2,
+        "importPath": "Backend.routes",
+        "description": "Backend.routes",
+        "peekOfCode": "def test_route():\n    return \"The routes are working!\", 200\nif __name__ == '__main__':\n    app.run(host='0.0.0.0', port=5000)\n    print(\"Server is running on port 5000\")",
+        "detail": "Backend.routes",
+        "documentation": {}
+    },
+    {
+        "label": "app",
+        "kind": 5,
+        "importPath": "Backend.routes",
+        "description": "Backend.routes",
+        "peekOfCode": "app = Flask(__name__)   \nCORS(app)\nPG_DB_URL = os.getenv('PG_DATABASE_URL')\nprint(\"This is the url ---------- \",PG_DB_URL)\nengine = create_engine(PG_DB_URL)\nBase.metadata.create_all(engine)\nSession = sessionmaker(bind=engine)\n#! Organization\n@app.route('/add-organization', methods=['POST'])\ndef add_organization():",
+        "detail": "Backend.routes",
+        "documentation": {}
+    },
+    {
+        "label": "PG_DB_URL",
+        "kind": 5,
+        "importPath": "Backend.routes",
+        "description": "Backend.routes",
+        "peekOfCode": "PG_DB_URL = os.getenv('PG_DATABASE_URL')\nprint(\"This is the url ---------- \",PG_DB_URL)\nengine = create_engine(PG_DB_URL)\nBase.metadata.create_all(engine)\nSession = sessionmaker(bind=engine)\n#! Organization\n@app.route('/add-organization', methods=['POST'])\ndef add_organization():\n    data = request.get_json()\n    organization_name = data['institute_name']",
+        "detail": "Backend.routes",
+        "documentation": {}
+    },
+    {
+        "label": "engine",
+        "kind": 5,
+        "importPath": "Backend.routes",
+        "description": "Backend.routes",
+        "peekOfCode": "engine = create_engine(PG_DB_URL)\nBase.metadata.create_all(engine)\nSession = sessionmaker(bind=engine)\n#! Organization\n@app.route('/add-organization', methods=['POST'])\ndef add_organization():\n    data = request.get_json()\n    organization_name = data['institute_name']\n    organization_email = data['email']\n    organization_password = data['password']",
+        "detail": "Backend.routes",
+        "documentation": {}
+    },
+    {
+        "label": "Session",
+        "kind": 5,
+        "importPath": "Backend.routes",
+        "description": "Backend.routes",
+        "peekOfCode": "Session = sessionmaker(bind=engine)\n#! Organization\n@app.route('/add-organization', methods=['POST'])\ndef add_organization():\n    data = request.get_json()\n    organization_name = data['institute_name']\n    organization_email = data['email']\n    organization_password = data['password']\n    new_organization = Organization(\n        institute_name=organization_name,",
+        "detail": "Backend.routes",
+        "documentation": {}
+    },
+    {
+        "label": "PG_DB_URL",
+        "kind": 5,
+        "importPath": "Backend.sample",
+        "description": "Backend.sample",
+        "peekOfCode": "PG_DB_URL = os.getenv('yash')\nprint(\"This is the url: \", PG_DB_URL)",
+        "detail": "Backend.sample",
+        "documentation": {}
+    }
+]

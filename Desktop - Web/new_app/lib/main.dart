@@ -11,7 +11,10 @@ import 'live_tracking_page.dart'; // Import LiveTrackingPage
 import 'update_details_page.dart'; // Import UpdateDetailsPage
 import 'package:provider/provider.dart';
 import 'pie_chart_data_model.dart';
+import 'package:flutter_web_plugins/flutter_web_plugins.dart';
+
 void main() {
+  setUrlStrategy(PathUrlStrategy());
   runApp(MyApp());
 }
 
@@ -28,14 +31,18 @@ class MyApp extends StatelessWidget {
         '/': (context) => SplashScreen(), // SplashScreen as the initial route
         '/login': (context) => LoginPage(), // Define route for LoginPage
         '/home': (context) => HomePage(), // Define route for HomePage
-        '/busDetail': (context) => BusDetailPage(), // Define route for BusDetailPage
-        '/studentDetail': (context) => StudentDetailPage(), // Define route for StudentDetailPage
+        '/busDetail': (context) =>
+            BusDetailPage(), // Define route for BusDetailPage
+        '/studentDetail': (context) =>
+            StudentDetailPage(), // Define route for StudentDetailPage
         '/onRoute': (context) => OnRoutePage(), // Define route for OnRoutePage
         '/standby': (context) => StandbyPage(), // Define route for StandbyPage
-        '/outOfService': (context) => OutOfServicePage(), // Define route for OutOfServicePage
-        '/liveTracking': (context) => LiveTrackingPage(), // Define route for LiveTrackingPage
-        '/updateDetails': (context) => UpdateDetailsPage(), // Define route for UpdateDetailsPage
-
+        '/outOfService': (context) =>
+            OutOfServicePage(), // Define route for OutOfServicePage
+        '/liveTracking': (context) =>
+            LiveTrackingPage(), // Define route for LiveTrackingPage
+        '/updateDetails': (context) =>
+            UpdateDetailsPage(), // Define route for UpdateDetailsPage
       },
     );
   }

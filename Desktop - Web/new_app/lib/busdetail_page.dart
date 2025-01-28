@@ -44,6 +44,8 @@ class _BusDetailPageState extends State<BusDetailPage> {
   List<Map<String, String>> filteredBuses = [];
   bool isEditMode = false;
 
+  void _fetchBusDetails() {}
+
   @override
   void initState() {
     super.initState();
@@ -52,15 +54,22 @@ class _BusDetailPageState extends State<BusDetailPage> {
 
   void filterBuses() {
     setState(() {
-      filteredBuses = buses.where((bus) => bus['shift'] == selectedShift && bus['time'] == selectedTime).toList();
+      filteredBuses = buses
+          .where((bus) =>
+              bus['shift'] == selectedShift && bus['time'] == selectedTime)
+          .toList();
     });
   }
 
   void filterSearchResults(String query) {
-    List<Map<String, String>> filtered = buses.where((bus) => bus['shift'] == selectedShift && bus['time'] == selectedTime).toList();
+    List<Map<String, String>> filtered = buses
+        .where((bus) =>
+            bus['shift'] == selectedShift && bus['time'] == selectedTime)
+        .toList();
     if (query.isNotEmpty) {
       filtered = filtered.where((bus) {
-        return bus.values.any((value) => value.toLowerCase().contains(query.toLowerCase()));
+        return bus.values
+            .any((value) => value.toLowerCase().contains(query.toLowerCase()));
       }).toList();
     }
     setState(() {
@@ -138,7 +147,8 @@ class _BusDetailPageState extends State<BusDetailPage> {
                         SizedBox(width: 8),
                         Text(
                           'Manage Buses',
-                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.bold),
                         ),
                         Spacer(),
                         Row(
@@ -147,7 +157,8 @@ class _BusDetailPageState extends State<BusDetailPage> {
                               onPressed: () async {
                                 final newBus = await Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => AddBusPage()),
+                                  MaterialPageRoute(
+                                      builder: (context) => AddBusPage()),
                                 );
                                 if (newBus != null) {
                                   setState(() {
@@ -252,72 +263,87 @@ class _BusDetailPageState extends State<BusDetailPage> {
                         ],
                         rows: List<DataRow>.generate(
                           filteredBuses.length,
-                              (index) => DataRow(cells: [
+                          (index) => DataRow(cells: [
                             DataCell(
                               isEditMode
                                   ? TextField(
-                                controller: TextEditingController(text: filteredBuses[index]['busNumber']),
-                                onChanged: (value) {
-                                  setState(() {
-                                    filteredBuses[index]['busNumber'] = value;
-                                  });
-                                },
-                              )
+                                      controller: TextEditingController(
+                                          text: filteredBuses[index]
+                                              ['busNumber']),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          filteredBuses[index]['busNumber'] =
+                                              value;
+                                        });
+                                      },
+                                    )
                                   : Text(filteredBuses[index]['busNumber']!),
                             ),
                             DataCell(
                               isEditMode
                                   ? TextField(
-                                controller: TextEditingController(text: filteredBuses[index]['busSeats']),
-                                onChanged: (value) {
-                                  setState(() {
-                                    filteredBuses[index]['busSeats'] = value;
-                                  });
-                                },
-                              )
+                                      controller: TextEditingController(
+                                          text: filteredBuses[index]
+                                              ['busSeats']),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          filteredBuses[index]['busSeats'] =
+                                              value;
+                                        });
+                                      },
+                                    )
                                   : Text(filteredBuses[index]['busSeats']!),
                             ),
                             DataCell(
                               isEditMode
                                   ? TextField(
-                                controller: TextEditingController(text: filteredBuses[index]['busRoute']),
-                                onChanged: (value) {
-                                  setState(() {
-                                    filteredBuses[index]['busRoute'] = value;
-                                  });
-                                },
-                              )
+                                      controller: TextEditingController(
+                                          text: filteredBuses[index]
+                                              ['busRoute']),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          filteredBuses[index]['busRoute'] =
+                                              value;
+                                        });
+                                      },
+                                    )
                                   : Text(filteredBuses[index]['busRoute']!),
                             ),
                             DataCell(
                               isEditMode
                                   ? TextField(
-                                controller: TextEditingController(text: filteredBuses[index]['registrationPlate']),
-                                onChanged: (value) {
-                                  setState(() {
-                                    filteredBuses[index]['registrationPlate'] = value;
-                                  });
-                                },
-                              )
-                                  : Text(filteredBuses[index]['registrationPlate']!),
+                                      controller: TextEditingController(
+                                          text: filteredBuses[index]
+                                              ['registrationPlate']),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          filteredBuses[index]
+                                              ['registrationPlate'] = value;
+                                        });
+                                      },
+                                    )
+                                  : Text(filteredBuses[index]
+                                      ['registrationPlate']!),
                             ),
                             DataCell(
                               isEditMode
                                   ? DropdownButton<String>(
-                                value: filteredBuses[index]['status'],
-                                onChanged: (String? newValue) {
-                                  setState(() {
-                                    filteredBuses[index]['status'] = newValue!;
-                                  });
-                                },
-                                items: <String>['Activate', 'Deactivate']
-                                    .map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                              )
+                                      value: filteredBuses[index]['status'],
+                                      onChanged: (String? newValue) {
+                                        setState(() {
+                                          filteredBuses[index]['status'] =
+                                              newValue!;
+                                        });
+                                      },
+                                      items: <String>['Activate', 'Deactivate']
+                                          .map<DropdownMenuItem<String>>(
+                                              (String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(value),
+                                        );
+                                      }).toList(),
+                                    )
                                   : Text(filteredBuses[index]['status']!),
                             ),
                             DataCell(

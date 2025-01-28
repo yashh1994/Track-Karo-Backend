@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:new_app/home_page.dart'; // Import the HomePage file
+import 'dart:convert'; // For JSON encoding/decoding
+import 'package:http/http.dart' as http;
+import 'package:new_app/home_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(LoginPage());
@@ -23,19 +26,64 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  Future<SharedPreferences> prefs = SharedPreferences.getInstance();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  void _login(BuildContext context) {
-    String username = _usernameController.text;
-    String password = _passwordController.text;
-    // Perform login authentication here
-    print('Username: $username, Password: $password');
+  // Global variable to store the token
 
-    // Navigate to home page after successful login
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => HomePage()),
+  // Method to store the token
+  Future<void> _storeCredentials(String token) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('token', token);
+  }
+
+  // Method to perform login
+  Future<void> _login(BuildContext context) async {
+    String email = _usernameController.text;
+    String password = _passwordController.text;
+
+    if (email.isEmpty || password.isEmpty) {
+      _showMessage('Please enter both email and password');
+      return;
+    }
+
+    try {
+      // Send POST request
+      final response = await http.post(
+        Uri.parse('http://localhost:5000/login-organization'),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"email": email, "password": password}),
+      );
+
+      if (response.statusCode == 200) {
+        // Parse the response
+        final data = jsonDecode(response.body);
+        if (data["organization_id"] != null) {
+          await _storeCredentials(data["organization_id"].toString());
+          if (!mounted) return;
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => HomePage()),
+          ); // Navigate to HomePage
+          // Navigate to HomePage
+        } else {
+          _showMessage('Login failed. No token received.');
+        }
+      } else if (response.statusCode == 401) {
+        _showMessage('Invalid email or password.');
+      } else {
+        _showMessage('Something went wrong. Please try again later.');
+      }
+    } catch (e) {
+      _showMessage('Error: Unable to connect to the server.: ' + e.toString());
+    }
+  }
+
+  // Method to show messages
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
     );
   }
 
@@ -109,7 +157,6 @@ class LoginForm extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
             textAlign: TextAlign.center,
-
           ),
           SizedBox(height: 20.0),
           // Username TextField
@@ -117,7 +164,7 @@ class LoginForm extends StatelessWidget {
             controller: usernameController,
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.person),
-              labelText: 'Username',
+              labelText: 'Email',
               filled: true,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.0),
@@ -146,7 +193,8 @@ class LoginForm extends StatelessWidget {
               padding: MaterialStateProperty.all<EdgeInsets>(
                 EdgeInsets.symmetric(vertical: 16),
               ),
-              backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF03B0C1)),
+              backgroundColor:
+                  MaterialStateProperty.all<Color>(Color(0xFF03B0C1)),
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30.0),
@@ -154,7 +202,8 @@ class LoginForm extends StatelessWidget {
                 ),
               ),
             ),
-            child: Text('Login', style: TextStyle(color: Colors.white, fontSize: 20)),
+            child: Text('Login',
+                style: TextStyle(color: Colors.white, fontSize: 20)),
           ),
         ],
       ),

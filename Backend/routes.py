@@ -84,6 +84,28 @@ def get_organization_data(id):
     else:
         return jsonify({"error": "Organization not found"}), 404
 
+@app.route('/login-organization', methods=['POST'])
+def login_organization():
+    data = request.get_json()
+
+    email = data.get('email')
+    password = data.get('password')
+
+    if not email or not password:
+        return jsonify({"error": "Invalid input. 'email' and 'password' are required."}), 400
+
+    session = Session()
+    try:
+        organization = session.query(Organization).filter_by(email=email, password=password).first()
+        if not organization:
+            return jsonify({"error": "Invalid email or password"}), 401
+
+        return jsonify({"message": "Login successful", "organization_id": organization.id}), 200
+    except Exception as e:
+        app.logger.error(f"Error logging in organization: {e}")
+        return jsonify({"error": "An internal error occurred"}), 500
+    finally:
+        session.close()
 
 
 #! Routes
@@ -206,7 +228,6 @@ def update_route():
 
 
 #! Driver
-
 @app.route('/add-driver', methods=['POST'])
 def add_driver():
     data = request.get_json()

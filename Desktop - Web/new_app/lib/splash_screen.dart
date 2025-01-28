@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // Add this import for shared preferences
 import 'package:new_app/login_page.dart'; // Adjust the import path according to your project structure
+import 'package:new_app/home_page.dart'; // Adjust the import path according to your project structure
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -34,11 +36,21 @@ class _SplashScreenState extends State<SplashScreen>
 
     _controller.forward();
 
+    _checkToken();
+  }
+
+  Future<void> _checkToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
     Timer(Duration(seconds: 3), () {
-      // Navigate to the login page after 5 seconds
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (BuildContext context) => LoginPage(),
-      ));
+      if (token != null && token.isNotEmpty) {
+        Navigator.pushReplacementNamed(
+            context, '/home'); // Navigate to HomePage
+      } else {
+        Navigator.pushReplacementNamed(
+            context, '/login'); // Navigate to LoginPage
+      }
     });
   }
 
