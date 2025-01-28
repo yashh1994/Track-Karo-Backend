@@ -7,6 +7,11 @@ class OnRoutePage extends StatefulWidget {
 }
 
 class _OnRoutePageState extends State<OnRoutePage> {
+  List<Map<String, dynamic>> Route = [];
+  bool isLoading = true;
+  bool isError = false;
+  String? _token;
+
   List<Map<String, String>> busDetails = [
     {
       'Bus Number': 'ABC123',
@@ -32,9 +37,10 @@ class _OnRoutePageState extends State<OnRoutePage> {
 
   @override
   Widget build(BuildContext context) {
+    print("Building OnRoutePage");
     List<Map<String, String>> filteredBusDetails = busDetails.where((bus) {
-      return bus.values.any((value) =>
-          value.toLowerCase().contains(searchQuery.toLowerCase()));
+      return bus.values.any(
+          (value) => value.toLowerCase().contains(searchQuery.toLowerCase()));
     }).toList();
 
     return Scaffold(
@@ -124,9 +130,10 @@ class _OnRoutePageState extends State<OnRoutePage> {
                         ElevatedButton(
                           onPressed: () {
                             setState(() {
-                              busDetail['Status'] = busDetail['Status'] == 'Active'
-                                  ? 'Deactivate'
-                                  : 'Active';
+                              busDetail['Status'] =
+                                  busDetail['Status'] == 'Active'
+                                      ? 'Deactivate'
+                                      : 'Active';
                             });
                           },
                           child: Text(busDetail['Status']!),
@@ -260,17 +267,17 @@ class _OnRoutePageState extends State<OnRoutePage> {
 
   void _showEditDialog(Map<String, String> busDetail) {
     TextEditingController busNumberController =
-    TextEditingController(text: busDetail['Bus Number']);
+        TextEditingController(text: busDetail['Bus Number']);
     TextEditingController busSeatsController =
-    TextEditingController(text: busDetail['Bus Seats']);
+        TextEditingController(text: busDetail['Bus Seats']);
     TextEditingController busRouteController =
-    TextEditingController(text: busDetail['Bus Route']);
+        TextEditingController(text: busDetail['Bus Route']);
     TextEditingController driverNameController =
-    TextEditingController(text: busDetail['Driver Name']);
+        TextEditingController(text: busDetail['Driver Name']);
     TextEditingController driverPhoneController =
-    TextEditingController(text: busDetail['Driver Phone']);
+        TextEditingController(text: busDetail['Driver Phone']);
     TextEditingController registrationPlateController =
-    TextEditingController(text: busDetail['Registration Plate']);
+        TextEditingController(text: busDetail['Registration Plate']);
 
     showDialog(
       context: context,
@@ -336,7 +343,8 @@ class _OnRoutePageState extends State<OnRoutePage> {
   }
 
   void _launchMaps(String busRoute) async {
-    const String googleMapsUrl = "https://www.google.com/maps/search/?api=1&query=37.7749,-122.4194";
+    const String googleMapsUrl =
+        "https://www.google.com/maps/search/?api=1&query=37.7749,-122.4194";
 
     if (await canLaunch(googleMapsUrl)) {
       await launch(googleMapsUrl);

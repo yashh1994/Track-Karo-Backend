@@ -109,7 +109,7 @@ def login_organization():
 
 
 #! Routes
-@app.route('/get-all-routes', methods=['GET'])
+@app.route('/get-all-routes', methods=['POST'])
 def get_all_routes():
     session = Session()
     try:
@@ -265,7 +265,7 @@ def add_driver():
     finally:
         session.close()
 
-@app.route('/get-all-drivers', methods=['GET'])
+@app.route('/get-all-drivers', methods=['POST'])
 def get_all_drivers():
     data = request.get_json()
 
@@ -393,7 +393,7 @@ def add_bus():
     finally:
         session.close()
 
-@app.route('/get-all-bus', methods=['GET'])
+@app.route('/get-all-bus', methods=['POST'])
 def get_all_bus():
     session = Session()
     try:
@@ -564,7 +564,7 @@ def add_student():
         session.rollback()
         return jsonify({"error": str(e)}), 500
 
-@app.route('/get-all-students', methods=['GET'])
+@app.route('/get-all-students', methods=['POST'])
 def get_all_students():
     data = request.get_json()
 

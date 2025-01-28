@@ -210,6 +210,7 @@ class Student(Base):
             "busfee": self.busfee,
             "student_class": self.student_class,
             "status": self.status,
-            "email": self.email
+            "email": self.email,
+            "id":self.id
         }
 

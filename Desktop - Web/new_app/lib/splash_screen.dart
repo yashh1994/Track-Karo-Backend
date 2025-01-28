@@ -42,7 +42,7 @@ class _SplashScreenState extends State<SplashScreen>
   Future<void> _checkToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
-
+    print("This is the token: $token");
     Timer(Duration(seconds: 3), () {
       if (token != null && token.isNotEmpty) {
         Navigator.pushReplacementNamed(
