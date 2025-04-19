@@ -11,7 +11,7 @@ app = Flask(__name__)
 CORS(app)
 
 
-PG_DB_URL = os.getenv('PG_DATABASE_URL')
+PG_DB_URL = os.getenv('SUPABASE_PG_DATABASE_URL')
 print("This is the url ---------- ",PG_DB_URL)
 engine = create_engine(PG_DB_URL)
 Base.metadata.create_all(engine)
