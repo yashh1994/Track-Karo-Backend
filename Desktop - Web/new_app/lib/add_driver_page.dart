@@ -3,6 +3,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
 
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 class AddDriverPage extends StatefulWidget {
   var driver;
 
@@ -41,6 +44,48 @@ class _AddDriverPageState extends State<AddDriverPage> {
     }
   }
 
+  Future<void> _submitDriverData() async {
+    final url = Uri.parse('http://localhost:5000/add-driver');
+
+    final driverData = {
+      "driver_photo":
+          _image != null ? "https://example.com/photos/john_doe.jpg" : "",
+      "driver_name": _nameController.text,
+      "driver_phone": _phoneController.text,
+      "driver_address": _addressController.text,
+      "driver_route": _selectedRouteNumber,
+      "driver_busnumber": _selectedBusNumber,
+      "organization_id": "1",
+      "driver_salary": _salaryController.text,
+      "status": _status == 'Active' ? true : false,
+    };
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(driverData),
+      );
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Driver added successfully')),
+        );
+        Navigator.pop(context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text('Failed to add driver: ${response.reasonPhrase}')),
+        );
+      }
+    } catch (error) {
+      print('Error adding driver: $error');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('An error occurred while adding driver')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,15 +109,17 @@ class _AddDriverPageState extends State<AddDriverPage> {
                   children: [
                     TableRow(children: [
                       _buildTextField(_nameController, 'Name', Icons.person),
-                      _buildTextField(_phoneController, 'Phone Number', Icons.phone),
+                      _buildTextField(
+                          _phoneController, 'Phone Number', Icons.phone),
                     ]),
                     TableRow(children: [
-                      _buildTextField(_addressController, 'Address', Icons.home),
+                      _buildTextField(
+                          _addressController, 'Address', Icons.home),
                       _buildDropdown(
                         _selectedRouteNumber,
                         'Route Number',
                         ['Route 1', 'Route 2', 'Route 3'], // Example values
-                            (newValue) {
+                        (newValue) {
                           setState(() {
                             _selectedRouteNumber = newValue!;
                           });
@@ -84,16 +131,18 @@ class _AddDriverPageState extends State<AddDriverPage> {
                         _selectedBusNumber,
                         'Bus Number',
                         ['Bus 1', 'Bus 2', 'Bus 3'], // Example values
-                            (newValue) {
+                        (newValue) {
                           setState(() {
                             _selectedBusNumber = newValue!;
                           });
                         },
                       ),
-                      _buildTextField(_salaryController, 'Salary', Icons.monetization_on),
+                      _buildTextField(
+                          _salaryController, 'Salary', Icons.monetization_on),
                     ]),
                     TableRow(children: [
-                      _buildDropdown(_status, 'Status', ['Active', 'Inactive'], (newValue) {
+                      _buildDropdown(_status, 'Status', ['Active', 'Inactive'],
+                          (newValue) {
                         setState(() {
                           _status = newValue!;
                         });
@@ -101,24 +150,16 @@ class _AddDriverPageState extends State<AddDriverPage> {
                       Column(
                         children: [
                           SizedBox(), // Empty cell for alignment
-                          SizedBox(height: 16.0), // Add space between dropdown and buttons
+                          SizedBox(
+                              height:
+                                  16.0), // Add space between dropdown and buttons
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               ElevatedButton(
                                 onPressed: () {
                                   if (_formKey.currentState!.validate()) {
-                                    final newDriver = {
-                                      'name': _nameController.text,
-                                      'phone': _phoneController.text,
-                                      'address': _addressController.text,
-                                      'routeNumber': _selectedRouteNumber,
-                                      'busNumber': _selectedBusNumber,
-                                      'salary': _salaryController.text,
-                                      'status': _status,
-                                      'image': _image?.path,
-                                    };
-                                    Navigator.pop(context, newDriver);
+                                    _submitDriverData();
                                   }
                                 },
                                 child: Text(
@@ -130,7 +171,8 @@ class _AddDriverPageState extends State<AddDriverPage> {
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20),
                                   ),
-                                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 20),
                                 ),
                               ),
                               ElevatedButton(
@@ -146,7 +188,8 @@ class _AddDriverPageState extends State<AddDriverPage> {
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20),
                                   ),
-                                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 20),
                                 ),
                               ),
                             ],
@@ -164,7 +207,8 @@ class _AddDriverPageState extends State<AddDriverPage> {
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String labelText, IconData icon) {
+  Widget _buildTextField(
+      TextEditingController controller, String labelText, IconData icon) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextFormField(
@@ -197,7 +241,8 @@ class _AddDriverPageState extends State<AddDriverPage> {
     );
   }
 
-  Widget _buildDropdown(String value, String labelText, List<String> items, ValueChanged<String?> onChanged) {
+  Widget _buildDropdown(String value, String labelText, List<String> items,
+      ValueChanged<String?> onChanged) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: DropdownButtonFormField<String>(
@@ -239,27 +284,28 @@ class _AddDriverPageState extends State<AddDriverPage> {
             onTap: _pickImage,
             child: _image != null
                 ? Container(
-              width: 150,
-              height: 150,
-              decoration: BoxDecoration(
-                shape: BoxShape.rectangle,
-                image: DecorationImage(
-                  image: FileImage(_image!),
-                  fit: BoxFit.cover,
-                ),
-                border: Border.all(color: Colors.grey, width: 2),
-              ),
-            )
+                    width: 150,
+                    height: 150,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      image: DecorationImage(
+                        image: FileImage(_image!),
+                        fit: BoxFit.cover,
+                      ),
+                      border: Border.all(color: Colors.grey, width: 2),
+                    ),
+                  )
                 : Container(
-              width: 150,
-              height: 150,
-              decoration: BoxDecoration(
-                shape: BoxShape.rectangle,
-                color: Colors.grey[200],
-                border: Border.all(color: Colors.grey, width: 2),
-              ),
-              child: Icon(Icons.camera_alt, size: 50, color: Colors.grey[700]),
-            ),
+                    width: 150,
+                    height: 150,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      color: Colors.grey[200],
+                      border: Border.all(color: Colors.grey, width: 2),
+                    ),
+                    child: Icon(Icons.camera_alt,
+                        size: 50, color: Colors.grey[700]),
+                  ),
           ),
         ),
         SizedBox(height: 16.0),

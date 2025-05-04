@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class AddRoutePage extends StatefulWidget {
   @override
@@ -70,6 +73,45 @@ class _AddRoutePageState extends State<AddRoutePage> {
     return await Geolocator.getCurrentPosition();
   }
 
+  Future<void> _addRoute() async {
+    final url = Uri.parse(
+        '${dotenv.env['BACKEND_API']}/add-route'); // Replace with actual IP and port
+    final body = {
+      "route_number": _routeNumberController.text,
+      "route_name": _routeNameController.text,
+      "source": _sourceController.text,
+      "destination": _destinationController.text,
+      "stops": _stopControllers
+          .map((c) => c.text)
+          .where((s) => s.isNotEmpty)
+          .toList(),
+      "organization_id": "1", // Update if this should be dynamic
+    };
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(body),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Route added successfully!')),
+        );
+        Navigator.pop(context); // Go back after success
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to add route: ${response.body}')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
+  }
+
   void _addStop() {
     setState(() {
       _stopControllers.add(TextEditingController());
@@ -78,16 +120,31 @@ class _AddRoutePageState extends State<AddRoutePage> {
 
   void _submitRoute() {
     // Validate if all required fields are filled
-    if (_routeNumberController.text.isEmpty ||
-        _routeNameController.text.isEmpty ||
-        _busController.text.isEmpty ||
-        _sourceController.text.isEmpty ||
-        _destinationController.text.isEmpty) {
+    List<String> emptyFields = [];
+
+    if (_routeNumberController.text.isEmpty) {
+      emptyFields.add('Route Number');
+    }
+    if (_routeNameController.text.isEmpty) {
+      emptyFields.add('Route Name');
+    }
+    if (_busController.text.isEmpty) {
+      // emptyFields.add('Bus Number');
+    }
+    if (_sourceController.text.isEmpty) {
+      emptyFields.add('Source');
+    }
+    if (_destinationController.text.isEmpty) {
+      emptyFields.add('Destination');
+    }
+
+    if (emptyFields.isNotEmpty) {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
           title: Text('Validation Error'),
-          content: Text('Please fill all fields before submitting.'),
+          content:
+              Text('The following fields are empty: ${emptyFields.join(', ')}'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -123,7 +180,8 @@ class _AddRoutePageState extends State<AddRoutePage> {
     Navigator.pop(context, newRoute);
   }
 
-  Widget _buildTextField(TextEditingController controller, String labelText, IconData icon) {
+  Widget _buildTextField(
+      TextEditingController controller, String labelText, IconData icon) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextFormField(
@@ -156,7 +214,8 @@ class _AddRoutePageState extends State<AddRoutePage> {
     );
   }
 
-  Widget _buildLocationField(TextEditingController controller, String labelText) {
+  Widget _buildLocationField(
+      TextEditingController controller, String labelText) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
@@ -238,8 +297,10 @@ class _AddRoutePageState extends State<AddRoutePage> {
                   },
                   children: [
                     TableRow(children: [
-                      _buildTextField(_routeNumberController, 'Route No.', Icons.format_list_numbered),
-                      _buildTextField(_routeNameController, 'Route Name', Icons.drive_eta),
+                      _buildTextField(_routeNumberController, 'Route No.',
+                          Icons.format_list_numbered),
+                      _buildTextField(
+                          _routeNameController, 'Route Name', Icons.drive_eta),
                     ]),
                     // TableRow(children: [
                     //   _buildTextField(_busController, 'Bus', Icons.directions_bus),
@@ -247,7 +308,8 @@ class _AddRoutePageState extends State<AddRoutePage> {
                     // ]),
                     TableRow(children: [
                       _buildLocationField(_sourceController, 'Source'),
-                      _buildLocationField(_destinationController, 'Destination'),
+                      _buildLocationField(
+                          _destinationController, 'Destination'),
                     ]),
                     ..._stopControllers.map((controller) {
                       return TableRow(children: [
@@ -268,12 +330,12 @@ class _AddRoutePageState extends State<AddRoutePage> {
               children: [
                 ElevatedButton(
                   onPressed: _addStop,
-                  child: Text('Add Stop',
+                  child: Text(
+                    'Add Stop',
                     style: TextStyle(color: Colors.white),
                   ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFF03B0C1),
-
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),

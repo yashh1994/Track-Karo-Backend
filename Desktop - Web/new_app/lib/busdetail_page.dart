@@ -41,7 +41,10 @@ class _BusDetailPageState extends State<BusDetailPage> {
   }
 
   Future<void> _fetchBusDetails() async {
+    print("---------- FETCH ALL BUSES USING " +
+        '${dotenv.env['BACKEND_API']}/get-all-bus');
     await _getOrganizationToken();
+    print("Token: $_token");
     setState(() {
       isLoading = true;
       isError = false;
@@ -56,8 +59,8 @@ class _BusDetailPageState extends State<BusDetailPage> {
           'organization_id': _token,
         }),
       );
-
-      if (response.statusCode == 200) {
+      print("Response: ${response.body}");
+      if (response != null) {
         final List<dynamic> busList = json.decode(response.body);
         setState(() {
           buses = busList.map((bus) {
@@ -123,10 +126,48 @@ class _BusDetailPageState extends State<BusDetailPage> {
     });
   }
 
-  void deleteBus(int index) {
-    setState(() {
-      filteredBuses.removeAt(index);
-    });
+  // void deleteBus(int index) {
+  //   setState(() {
+  //     print("-------- DELETE BUS ID: " +
+  //         filteredBuses[index]['id'].toString() +
+  //         " using " +
+  //         '${dotenv.env['BACKEND_API']}/delete-bus');
+  //     filteredBuses.removeAt(index);
+  //   });
+  // }
+
+  void deleteBus(int index) async {
+    final bus = filteredBuses[index];
+    final String busId = bus['id'].toString();
+    final String url = '${dotenv.env['BACKEND_API']}/delete-bus';
+
+    try {
+      final response = await http.delete(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          "id": busId,
+          "organization_id": _token,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        setState(() {
+          filteredBuses.removeAt(index);
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('✅ Bus deleted successfully!')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('❌ Failed to delete bus: ${response.body}')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('❌ Error: $e')),
+      );
+    }
   }
 
   // Save edited data
@@ -192,7 +233,8 @@ class _BusDetailPageState extends State<BusDetailPage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                    'Failed to fetch bus details. Please try again.'),
+                                    'Failed to fetch bus details. Please try again. ' +
+                                        isError.toString()),
                                 SizedBox(height: 10),
                                 ElevatedButton(
                                   onPressed: _fetchBusDetails,
@@ -205,270 +247,258 @@ class _BusDetailPageState extends State<BusDetailPage> {
                               ],
                             ),
                           )
-                        : buses.isEmpty
-                            ? Center(child: Text('No buses available.'))
-                            : Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                        // : buses.isEmpty
+                        //     ? Center(child: Text('No buses available.'))
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
                                 children: [
-                                  Row(
-                                    children: [
-                                      Icon(Icons.directions_bus),
-                                      SizedBox(width: 8),
-                                      Text(
-                                        'Manage Buses',
-                                        style: TextStyle(
-                                            fontSize: 24,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Spacer(),
-                                      Row(
-                                        children: [
-                                          ElevatedButton.icon(
-                                            onPressed: () async {
-                                              final newBus =
-                                                  await Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        AddBusPage()),
-                                              );
-                                              if (newBus != null) {
-                                                setState(() {
-                                                  buses.add(newBus);
-                                                  filterBuses();
-                                                });
-                                              }
-                                            },
-                                            icon: Icon(Icons.add),
-                                            label: Text('Add Bus'),
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor:
-                                                  Color(0xFF03B0C1),
-                                              foregroundColor: Colors.white,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(width: 10),
-                                          ElevatedButton.icon(
-                                            onPressed: () {
-                                              setState(() {
-                                                isEditMode = !isEditMode;
-                                              });
-                                            },
-                                            icon: Icon(Icons.edit),
-                                            label: Text(
-                                                isEditMode ? 'Save' : 'Edit'),
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor:
-                                                  Color(0xFF03B0C1),
-                                              foregroundColor: Colors.white,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                                  Icon(Icons.directions_bus),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    'Manage Buses',
+                                    style: TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold),
                                   ),
-                                  SizedBox(height: 20),
+                                  Spacer(),
                                   Row(
                                     children: [
-                                      Expanded(
-                                        child: TextField(
-                                          onChanged: filterSearchResults,
-                                          decoration: InputDecoration(
-                                            prefixIcon: Icon(Icons.search),
-                                            hintText: 'Search...',
-                                            border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                            ),
+                                      ElevatedButton.icon(
+                                        onPressed: () async {
+                                          final newBus = await Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    AddBusPage()),
+                                          );
+                                          if (newBus != null) {
+                                            setState(() {
+                                              buses.add(newBus);
+                                              filterBuses();
+                                            });
+                                          }
+                                        },
+                                        icon: Icon(Icons.add),
+                                        label: Text('Add Bus'),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Color(0xFF03B0C1),
+                                          foregroundColor: Colors.white,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
                                           ),
                                         ),
                                       ),
                                       SizedBox(width: 10),
-                                      DropdownButton<String>(
-                                        value: selectedTime,
-                                        onChanged: (String? newValue) {
+                                      ElevatedButton.icon(
+                                        onPressed: () {
                                           setState(() {
-                                            selectedTime = newValue!;
-                                            filterBuses();
+                                            isEditMode = !isEditMode;
                                           });
                                         },
-                                        items: <String>[
-                                          'Morning',
-                                          'Afternoon',
-                                          'Evening'
-                                        ].map<DropdownMenuItem<String>>(
-                                            (String value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value,
-                                            child: Text(value),
-                                          );
-                                        }).toList(),
-                                      ),
-                                      SizedBox(width: 10),
-                                      DropdownButton<String>(
-                                        value: selectedShift,
-                                        onChanged: (String? newValue) {
-                                          setState(() {
-                                            selectedShift = newValue!;
-                                            filterBuses();
-                                          });
-                                        },
-                                        items: <String>[
-                                          'Shift 1',
-                                          'Shift 2',
-                                          'Shift 3'
-                                        ].map<DropdownMenuItem<String>>(
-                                            (String value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value,
-                                            child: Text(value),
-                                          );
-                                        }).toList(),
+                                        icon: Icon(Icons.edit),
+                                        label:
+                                            Text(isEditMode ? 'Save' : 'Edit'),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Color(0xFF03B0C1),
+                                          foregroundColor: Colors.white,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                          ),
+                                        ),
                                       ),
                                     ],
                                   ),
-                                  SizedBox(height: 20),
+                                ],
+                              ),
+                              SizedBox(height: 20),
+                              Row(
+                                children: [
                                   Expanded(
-                                    child: DataTable(
-                                      columnSpacing: 20,
-                                      columns: [
-                                        DataColumn(label: Text('Bus Number')),
-                                        DataColumn(label: Text('Bus Seats')),
-                                        DataColumn(label: Text('Bus Route')),
-                                        DataColumn(
-                                            label: Text('Registration Plate')),
-                                        DataColumn(label: Text('Status')),
-                                        DataColumn(label: Text('Action')),
-                                      ],
-                                      rows: List<DataRow>.generate(
-                                        filteredBuses.length,
-                                        (index) => DataRow(cells: [
-                                          DataCell(
-                                            isEditMode
-                                                ? TextField(
-                                                    controller:
-                                                        TextEditingController(
-                                                            text: filteredBuses[
-                                                                    index]
-                                                                ['busNumber']),
-                                                    onChanged: (value) {
-                                                      setState(() {
-                                                        filteredBuses[index]
-                                                                ['busNumber'] =
-                                                            value;
-                                                      });
-                                                    },
-                                                  )
-                                                : Text(filteredBuses[index]
-                                                    ['busNumber']!),
-                                          ),
-                                          DataCell(
-                                            isEditMode
-                                                ? TextField(
-                                                    controller:
-                                                        TextEditingController(
-                                                            text: filteredBuses[
-                                                                    index]
-                                                                ['busSeats']),
-                                                    onChanged: (value) {
-                                                      setState(() {
-                                                        filteredBuses[index]
-                                                                ['busSeats'] =
-                                                            value;
-                                                      });
-                                                    },
-                                                  )
-                                                : Text(filteredBuses[index]
-                                                    ['busSeats']!),
-                                          ),
-                                          DataCell(
-                                            isEditMode
-                                                ? TextField(
-                                                    controller:
-                                                        TextEditingController(
-                                                            text: filteredBuses[
-                                                                    index]
-                                                                ['busRoute']),
-                                                    onChanged: (value) {
-                                                      setState(() {
-                                                        filteredBuses[index]
-                                                                ['busRoute'] =
-                                                            value;
-                                                      });
-                                                    },
-                                                  )
-                                                : Text(filteredBuses[index]
-                                                    ['busRoute']!),
-                                          ),
-                                          DataCell(
-                                            isEditMode
-                                                ? TextField(
-                                                    controller:
-                                                        TextEditingController(
-                                                            text: filteredBuses[
-                                                                    index][
-                                                                'registrationPlate']),
-                                                    onChanged: (value) {
-                                                      setState(() {
-                                                        filteredBuses[index][
-                                                                'registrationPlate'] =
-                                                            value;
-                                                      });
-                                                    },
-                                                  )
-                                                : Text(filteredBuses[index]
-                                                    ['registrationPlate']!),
-                                          ),
-                                          DataCell(
-                                            isEditMode
-                                                ? DropdownButton<String>(
-                                                    value: filteredBuses[index]
-                                                        ['status'],
-                                                    onChanged:
-                                                        (String? newValue) {
-                                                      setState(() {
-                                                        filteredBuses[index]
-                                                                ['status'] =
-                                                            newValue!;
-                                                      });
-                                                    },
-                                                    items: <String>[
-                                                      'Activate',
-                                                      'Deactivate'
-                                                    ].map<
-                                                            DropdownMenuItem<
-                                                                String>>(
-                                                        (String value) {
-                                                      return DropdownMenuItem<
-                                                          String>(
-                                                        value: value,
-                                                        child: Text(value),
-                                                      );
-                                                    }).toList(),
-                                                  )
-                                                : Text(filteredBuses[index]
-                                                    ['status']!),
-                                          ),
-                                          DataCell(
-                                            IconButton(
-                                              icon: Icon(Icons.delete),
-                                              onPressed: () => deleteBus(index),
-                                            ),
-                                          ),
-                                        ]),
+                                    child: TextField(
+                                      onChanged: filterSearchResults,
+                                      decoration: InputDecoration(
+                                        prefixIcon: Icon(Icons.search),
+                                        hintText: 'Search...',
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
                                       ),
                                     ),
                                   ),
+                                  SizedBox(width: 10),
+                                  DropdownButton<String>(
+                                    value: selectedTime,
+                                    onChanged: (String? newValue) {
+                                      setState(() {
+                                        selectedTime = newValue!;
+                                        filterBuses();
+                                      });
+                                    },
+                                    items: <String>[
+                                      'Morning',
+                                      'Afternoon',
+                                      'Evening'
+                                    ].map<DropdownMenuItem<String>>(
+                                        (String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(value),
+                                      );
+                                    }).toList(),
+                                  ),
+                                  SizedBox(width: 10),
+                                  DropdownButton<String>(
+                                    value: selectedShift,
+                                    onChanged: (String? newValue) {
+                                      setState(() {
+                                        selectedShift = newValue!;
+                                        filterBuses();
+                                      });
+                                    },
+                                    items: <String>[
+                                      'Shift 1',
+                                      'Shift 2',
+                                      'Shift 3'
+                                    ].map<DropdownMenuItem<String>>(
+                                        (String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(value),
+                                      );
+                                    }).toList(),
+                                  ),
                                 ],
                               ),
+                              SizedBox(height: 20),
+                              Expanded(
+                                child: DataTable(
+                                  columnSpacing: 20,
+                                  columns: [
+                                    DataColumn(label: Text('Bus Number')),
+                                    DataColumn(label: Text('Bus Seats')),
+                                    DataColumn(label: Text('Bus Route')),
+                                    DataColumn(
+                                        label: Text('Registration Plate')),
+                                    DataColumn(label: Text('Status')),
+                                    DataColumn(label: Text('Action')),
+                                  ],
+                                  rows: List<DataRow>.generate(
+                                    filteredBuses.length,
+                                    (index) => DataRow(cells: [
+                                      DataCell(
+                                        isEditMode
+                                            ? TextField(
+                                                controller:
+                                                    TextEditingController(
+                                                        text:
+                                                            filteredBuses[index]
+                                                                ['busNumber']),
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    filteredBuses[index]
+                                                        ['busNumber'] = value;
+                                                  });
+                                                },
+                                              )
+                                            : Text(filteredBuses[index]
+                                                ['busNumber']!),
+                                      ),
+                                      DataCell(
+                                        isEditMode
+                                            ? TextField(
+                                                controller:
+                                                    TextEditingController(
+                                                        text:
+                                                            filteredBuses[index]
+                                                                ['busSeats']),
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    filteredBuses[index]
+                                                        ['busSeats'] = value;
+                                                  });
+                                                },
+                                              )
+                                            : Text(filteredBuses[index]
+                                                ['busSeats']!),
+                                      ),
+                                      DataCell(
+                                        isEditMode
+                                            ? TextField(
+                                                controller:
+                                                    TextEditingController(
+                                                        text:
+                                                            filteredBuses[index]
+                                                                ['busRoute']),
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    filteredBuses[index]
+                                                        ['busRoute'] = value;
+                                                  });
+                                                },
+                                              )
+                                            : Text(filteredBuses[index]
+                                                ['busRoute']!),
+                                      ),
+                                      DataCell(
+                                        isEditMode
+                                            ? TextField(
+                                                controller: TextEditingController(
+                                                    text: filteredBuses[index]
+                                                        ['registrationPlate']),
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    filteredBuses[index][
+                                                            'registrationPlate'] =
+                                                        value;
+                                                  });
+                                                },
+                                              )
+                                            : Text(filteredBuses[index]
+                                                ['registrationPlate']!),
+                                      ),
+                                      DataCell(
+                                        isEditMode
+                                            ? DropdownButton<String>(
+                                                value: filteredBuses[index]
+                                                    ['status'],
+                                                onChanged: (String? newValue) {
+                                                  setState(() {
+                                                    filteredBuses[index]
+                                                        ['status'] = newValue!;
+                                                  });
+                                                },
+                                                items: <String>[
+                                                  'Activate',
+                                                  'Deactivate'
+                                                ].map<DropdownMenuItem<String>>(
+                                                    (String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                              )
+                                            : Text(filteredBuses[index]
+                                                ['status']!),
+                                      ),
+                                      DataCell(
+                                        IconButton(
+                                          icon: Icon(Icons.delete),
+                                          onPressed: () => deleteBus(index),
+                                        ),
+                                      ),
+                                    ]),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
               ),
             ),
           ),

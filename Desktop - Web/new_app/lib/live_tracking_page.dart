@@ -230,238 +230,219 @@ class _LiveTrackingPageState extends State<LiveTrackingPage> {
                                   ],
                                 ),
                               )
-                            : routes.isEmpty
-                                ? Center(child: Text('No buses available.'))
-                                : Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                            // : routes.isEmpty
+                            //     ? Center(child: Text('No buses available.'))
+                            : Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Row(
-                                            children: [
-                                              Icon(Icons.map, size: 24),
-                                              SizedBox(width: 10),
-                                              Text(
-                                                'Set Route',
-                                                style: TextStyle(
-                                                  fontSize: 20.0,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          Row(
-                                            children: [
-                                              Container(
-                                                decoration: BoxDecoration(
-                                                  color: Color(0xFF03B0C1),
-                                                  borderRadius:
-                                                      BorderRadius.circular(20),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.black26,
-                                                      blurRadius: 5,
-                                                      offset: Offset(0, 2),
-                                                    ),
-                                                  ],
-                                                ),
-                                                child: ElevatedButton.icon(
-                                                  onPressed: _addRoute,
-                                                  icon: Icon(Icons.add,
-                                                      color: Colors.white),
-                                                  label: Text('Add Route',
-                                                      style: TextStyle(
-                                                          color: Colors.white)),
-                                                  style:
-                                                      ElevatedButton.styleFrom(
-                                                    backgroundColor:
-                                                        Colors.transparent,
-                                                    shadowColor:
-                                                        Colors.transparent,
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20),
-                                                    ),
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 20,
-                                                            vertical: 15),
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                  width:
-                                                      10), // Space between buttons
-                                              Container(
-                                                decoration: BoxDecoration(
-                                                  color: Color(0xFF03B0C1),
-                                                  borderRadius:
-                                                      BorderRadius.circular(20),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.black26,
-                                                      blurRadius: 5,
-                                                      offset: Offset(0, 2),
-                                                    ),
-                                                  ],
-                                                ),
-                                                child: ElevatedButton.icon(
-                                                  onPressed: isEditing
-                                                      ? _saveChanges
-                                                      : _toggleEdit,
-                                                  icon: Icon(
-                                                      isEditing
-                                                          ? Icons.edit
-                                                          : Icons.edit,
-                                                      color: Colors.white),
-                                                  label: Text(
-                                                      isEditing
-                                                          ? 'Save'
-                                                          : 'Edit',
-                                                      style: TextStyle(
-                                                          color: Colors.white)),
-                                                  style:
-                                                      ElevatedButton.styleFrom(
-                                                    backgroundColor:
-                                                        Colors.transparent,
-                                                    shadowColor:
-                                                        Colors.transparent,
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20),
-                                                    ),
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 20,
-                                                            vertical: 15),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
+                                          Icon(Icons.map, size: 24),
+                                          SizedBox(width: 10),
+                                          Text(
+                                            'Set Route',
+                                            style: TextStyle(
+                                              fontSize: 20.0,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ],
                                       ),
-                                      SizedBox(height: 10),
-                                      Divider(height: 20, thickness: 1),
-                                      TextField(
-                                        controller: _searchController,
-                                        decoration: InputDecoration(
-                                          hintText: 'Search...',
-                                          prefixIcon: Icon(Icons.search),
-                                          border: OutlineInputBorder(),
-                                          contentPadding: EdgeInsets.symmetric(
-                                              horizontal: 20, vertical: 15),
-                                        ),
-                                        onChanged: _filterRoutes,
-                                      ),
-                                      SizedBox(height: 10),
-                                      Expanded(
-                                        child: SingleChildScrollView(
-                                          scrollDirection: Axis.horizontal,
-                                          child: DataTable(
-                                            columnSpacing: 20,
-                                            columns: [
-                                              DataColumn(
-                                                  label: Text('Route Number')),
-                                              DataColumn(
-                                                  label: Text('Route Name')),
-                                              DataColumn(label: Text('Source')),
-                                              DataColumn(
-                                                  label: Text('Destination')),
-                                              DataColumn(
-                                                  label: Text('Bus Number')),
-                                              DataColumn(
-                                                  label: Text(
-                                                      'Action')), // Action column
-                                            ],
-                                            rows: filteredRoutes.map((route) {
-                                              int index =
-                                                  filteredRoutes.indexOf(route);
-                                              return DataRow(cells: [
-                                                DataCell(
-                                                  isEditing
-                                                      ? TextFormField(
-                                                          initialValue: route[
-                                                              'routeNumber'],
-                                                          onChanged: (value) =>
-                                                              route['routeNumber'] =
-                                                                  value,
-                                                        )
-                                                      : Text(
-                                                          route['routeNumber']),
+                                      Row(
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              color: Color(0xFF03B0C1),
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.black26,
+                                                  blurRadius: 5,
+                                                  offset: Offset(0, 2),
                                                 ),
-                                                DataCell(
-                                                  isEditing
-                                                      ? TextFormField(
-                                                          initialValue: route[
-                                                              'routeName'],
-                                                          onChanged: (value) =>
-                                                              route['routeName'] =
-                                                                  value,
-                                                        )
-                                                      : Text(
-                                                          route['routeName']),
+                                              ],
+                                            ),
+                                            child: ElevatedButton.icon(
+                                              onPressed: _addRoute,
+                                              icon: Icon(Icons.add,
+                                                  color: Colors.white),
+                                              label: Text('Add Route',
+                                                  style: TextStyle(
+                                                      color: Colors.white)),
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    Colors.transparent,
+                                                shadowColor: Colors.transparent,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
                                                 ),
-                                                DataCell(
-                                                  isEditing
-                                                      ? TextFormField(
-                                                          initialValue:
-                                                              route['source'],
-                                                          onChanged: (value) =>
-                                                              route['source'] =
-                                                                  value,
-                                                        )
-                                                      : Text(route['source']),
-                                                ),
-                                                DataCell(
-                                                  isEditing
-                                                      ? TextFormField(
-                                                          initialValue: route[
-                                                              'destination'],
-                                                          onChanged: (value) =>
-                                                              route['destination'] =
-                                                                  value,
-                                                        )
-                                                      : Text(
-                                                          route['destination']),
-                                                ),
-                                                DataCell(
-                                                  isEditing
-                                                      ? TextFormField(
-                                                          initialValue: route[
-                                                              'busNumber'],
-                                                          onChanged: (value) =>
-                                                              route['busNumber'] =
-                                                                  value,
-                                                        )
-                                                      : Text(
-                                                          route['busNumber']),
-                                                ),
-                                                DataCell(
-                                                  IconButton(
-                                                    onPressed: () {
-                                                      _deleteRoute(
-                                                          index); // Delete row
-                                                    },
-                                                    icon: Icon(Icons.delete),
-                                                    style: ElevatedButton
-                                                        .styleFrom(),
-                                                  ),
-                                                ),
-                                              ]);
-                                            }).toList(),
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 20,
+                                                    vertical: 15),
+                                              ),
+                                            ),
                                           ),
-                                        ),
+                                          SizedBox(
+                                              width:
+                                                  10), // Space between buttons
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              color: Color(0xFF03B0C1),
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.black26,
+                                                  blurRadius: 5,
+                                                  offset: Offset(0, 2),
+                                                ),
+                                              ],
+                                            ),
+                                            child: ElevatedButton.icon(
+                                              onPressed: isEditing
+                                                  ? _saveChanges
+                                                  : _toggleEdit,
+                                              icon: Icon(
+                                                  isEditing
+                                                      ? Icons.edit
+                                                      : Icons.edit,
+                                                  color: Colors.white),
+                                              label: Text(
+                                                  isEditing ? 'Save' : 'Edit',
+                                                  style: TextStyle(
+                                                      color: Colors.white)),
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    Colors.transparent,
+                                                shadowColor: Colors.transparent,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                ),
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 20,
+                                                    vertical: 15),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
+                                  SizedBox(height: 10),
+                                  Divider(height: 20, thickness: 1),
+                                  TextField(
+                                    controller: _searchController,
+                                    decoration: InputDecoration(
+                                      hintText: 'Search...',
+                                      prefixIcon: Icon(Icons.search),
+                                      border: OutlineInputBorder(),
+                                      contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 20, vertical: 15),
+                                    ),
+                                    onChanged: _filterRoutes,
+                                  ),
+                                  SizedBox(height: 10),
+                                  Expanded(
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: DataTable(
+                                        columnSpacing: 20,
+                                        columns: [
+                                          DataColumn(
+                                              label: Text('Route Number')),
+                                          DataColumn(label: Text('Route Name')),
+                                          DataColumn(label: Text('Source')),
+                                          DataColumn(
+                                              label: Text('Destination')),
+                                          DataColumn(label: Text('Bus Number')),
+                                          DataColumn(
+                                              label: Text(
+                                                  'Action')), // Action column
+                                        ],
+                                        rows: filteredRoutes.map((route) {
+                                          int index =
+                                              filteredRoutes.indexOf(route);
+                                          return DataRow(cells: [
+                                            DataCell(
+                                              isEditing
+                                                  ? TextFormField(
+                                                      initialValue:
+                                                          route['routeNumber'],
+                                                      onChanged: (value) =>
+                                                          route['routeNumber'] =
+                                                              value,
+                                                    )
+                                                  : Text(route['routeNumber']),
+                                            ),
+                                            DataCell(
+                                              isEditing
+                                                  ? TextFormField(
+                                                      initialValue:
+                                                          route['routeName'],
+                                                      onChanged: (value) =>
+                                                          route['routeName'] =
+                                                              value,
+                                                    )
+                                                  : Text(route['routeName']),
+                                            ),
+                                            DataCell(
+                                              isEditing
+                                                  ? TextFormField(
+                                                      initialValue:
+                                                          route['source'],
+                                                      onChanged: (value) =>
+                                                          route['source'] =
+                                                              value,
+                                                    )
+                                                  : Text(route['source']),
+                                            ),
+                                            DataCell(
+                                              isEditing
+                                                  ? TextFormField(
+                                                      initialValue:
+                                                          route['destination'],
+                                                      onChanged: (value) =>
+                                                          route['destination'] =
+                                                              value,
+                                                    )
+                                                  : Text(route['destination']),
+                                            ),
+                                            DataCell(
+                                              isEditing
+                                                  ? TextFormField(
+                                                      initialValue:
+                                                          route['busNumber'],
+                                                      onChanged: (value) =>
+                                                          route['busNumber'] =
+                                                              value,
+                                                    )
+                                                  : Text(route['busNumber']),
+                                            ),
+                                            DataCell(
+                                              IconButton(
+                                                onPressed: () {
+                                                  _deleteRoute(
+                                                      index); // Delete row
+                                                },
+                                                icon: Icon(Icons.delete),
+                                                style:
+                                                    ElevatedButton.styleFrom(),
+                                              ),
+                                            ),
+                                          ]);
+                                        }).toList(),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                   ),
                 ),
               ),

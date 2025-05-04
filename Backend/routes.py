@@ -123,7 +123,7 @@ def get_all_routes():
         routes = session.query(Route).filter_by(organization_id=organization_id).all()
         
         if not routes:
-            return jsonify({"error": "No routes found for the given organization_id"}), 404
+            return jsonify([]), 200
         
         route_data = [route.to_json() for route in routes]
         
@@ -258,7 +258,7 @@ def add_driver():
     try:
         session.add(new_driver)
         session.commit()
-        return jsonify({"message": "Driver added successfully"}), 201
+        return jsonify({"message": "Driver added successfully"}), 200
     except Exception as e:
         session.rollback()
         return jsonify({"error": str(e)}), 500
@@ -280,7 +280,7 @@ def get_all_drivers():
         drivers = session.query(Driver).filter_by(organization_id=organization_id).all()
         
         if not drivers:
-            return jsonify({"error": "No drivers found for the given organization_id"}), 404
+            return jsonify([]), 200
         
         driver_data = [driver.to_json() for driver in drivers]
 
@@ -407,7 +407,7 @@ def get_all_bus():
         buses = session.query(Bus).filter_by(organization_id=organization_id).all()
         
         if not buses:
-            return jsonify({"error": "No buses found for the given organization_id"}), 404
+            return jsonify([]), 200
         
         bus_data = [bus.to_json() for bus in buses]
         
