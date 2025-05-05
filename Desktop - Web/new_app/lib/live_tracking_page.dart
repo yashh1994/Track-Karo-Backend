@@ -130,10 +130,44 @@ class _LiveTrackingPageState extends State<LiveTrackingPage> {
     });
   }
 
-  void _deleteRoute(int index) {
-    setState(() {
-      filteredRoutes.removeAt(index);
-    });
+  // void _deleteRoute(int index) {
+  //   setState(() {
+  //     filteredRoutes.removeAt(index);
+  //   });
+  // }
+
+  void deleteRoute(int index) async {
+    final route = filteredRoutes[index];
+    final String routeId = route['id'].toString();
+    final String url = '${dotenv.env['BACKEND_API']}/delete-route';
+
+    try {
+      final response = await http.delete(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          "id": routeId,
+          "organization_id": _token,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        setState(() {
+          filteredRoutes.removeAt(index);
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('✅ Route deleted successfully!')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('❌ Failed to delete Route: ${response.body}')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('❌ Error: $e')),
+      );
+    }
   }
 
   Future<void> _addRoute() async {
@@ -428,7 +462,7 @@ class _LiveTrackingPageState extends State<LiveTrackingPage> {
                                             DataCell(
                                               IconButton(
                                                 onPressed: () {
-                                                  _deleteRoute(
+                                                  deleteRoute(
                                                       index); // Delete row
                                                 },
                                                 icon: Icon(Icons.delete),

@@ -553,12 +553,12 @@ def add_student():
             organization_id=organization_id
         )
 
-        # Add the new student to the database
+        
         
         session.add(new_student)
         session.commit()
 
-        return jsonify({"message": "Student added successfully", "student_id": new_student.to_json()}), 201
+        return jsonify({"message": "Student added successfully"}), 201
 
     except Exception as e:
         session.rollback()

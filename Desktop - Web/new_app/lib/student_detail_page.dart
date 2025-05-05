@@ -156,10 +156,45 @@ class _StudentDetailPageState extends State<StudentDetailPage> {
     }
   }
 
-  void _deleteStudent(int index) {
-    setState(() {
-      filteredStudents.removeAt(index);
-    });
+  // void _deleteStudent(int index) {
+  //   setState(() {
+  //     filteredStudents.removeAt(index);
+  //   });
+  // }
+
+  void _deleteStudent(int index) async {
+    final student = filteredStudents[index];
+    final String studentId = student['id'].toString();
+    final String url = '${dotenv.env['BACKEND_API']}/delete-student';
+
+    try {
+      final response = await http.delete(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          "id": studentId,
+          "organization_id": _token,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        setState(() {
+          filteredStudents.removeAt(index);
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('✅ Student deleted successfully!')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text('❌ Failed to delete Student: ${response.body}')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('❌ Error: $e')),
+      );
+    }
   }
 
   void _toggleStatus(int index) {
@@ -278,184 +313,241 @@ class _StudentDetailPageState extends State<StudentDetailPage> {
                       ),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(Icons.school, size: 24),
-                                SizedBox(width: 10),
-                                Text(
-                                  'Manage Student',
-                                  style: TextStyle(
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                    child: isLoading
+                        ? Center(child: CircularProgressIndicator())
+                        : isError
+                            ? Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                        'Failed to fetch Student details. Please try again.'),
+                                    SizedBox(height: 10),
+                                    ElevatedButton(
+                                      onPressed: _fetchStudentDetails,
+                                      child: Text('Retry'),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Color(0xFF03B0C1),
+                                        foregroundColor: Colors.white,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                ElevatedButton.icon(
-                                  onPressed: _addStudent,
-                                  icon: Icon(Icons.add, color: Colors.white),
-                                  label: Text(
-                                    'Add Students',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Color(0xFF03B0C1),
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 20, vertical: 15),
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                                ElevatedButton.icon(
-                                  onPressed: _toggleEdit,
-                                  icon: Icon(Icons.edit,
-                                      color: Colors.white), // Edit icon added
-                                  label: Text(
-                                    isEditing
-                                        ? "Save Changes"
-                                        : "Edit Students",
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Color(0xFF03B0C1),
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 20, vertical: 15),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 10),
-                        Divider(height: 20, thickness: 1),
-                        TextField(
-                          controller: _searchController,
-                          decoration: InputDecoration(
-                            hintText: 'Search...',
-                            prefixIcon: Icon(Icons.search),
-                            border: OutlineInputBorder(),
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 15),
-                          ),
-                          onChanged: _filterStudents,
-                        ),
-                        SizedBox(height: 10),
-                        Expanded(
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: DataTable(
-                              columnSpacing: 20,
-                              columns: [
-                                DataColumn(label: Text('Enrollment No.')),
-                                DataColumn(label: Text('Name')),
-                                DataColumn(label: Text('Phone Number')),
-                                DataColumn(label: Text('Bus Number')),
-                                DataColumn(label: Text('Address')),
-                                DataColumn(label: Text('Route')),
-                                DataColumn(label: Text('Bus Fees Paid')),
-                                DataColumn(label: Text('Class')),
-                                DataColumn(label: Text('Email Address')),
-                                DataColumn(label: Text('Status')),
-                                DataColumn(label: Text('Action')),
-                              ],
-                              rows: filteredStudents.map((student) {
-                                int index = filteredStudents.indexOf(student);
-                                return DataRow(cells: [
-                                  DataCell(isEditing
-                                      ? _buildEditableField(
-                                          student['Enrollment No.']!,
-                                          (value) =>
-                                              student['Enrollment No.'] = value)
-                                      : Text(student['Enrollment No.']!)),
-                                  DataCell(isEditing
-                                      ? _buildEditableField(student['Name']!,
-                                          (value) => student['Name'] = value)
-                                      : Text(student['Name']!)),
-                                  DataCell(isEditing
-                                      ? _buildEditableField(
-                                          student['Phone Number']!,
-                                          (value) =>
-                                              student['Phone Number'] = value)
-                                      : Text(student['Phone Number']!)),
-                                  DataCell(isEditing
-                                      ? _buildEditableField(
-                                          student['Bus Number']!,
-                                          (value) =>
-                                              student['Bus Number'] = value)
-                                      : Text(student['Bus Number']!)),
-                                  DataCell(isEditing
-                                      ? _buildEditableField(student['Address']!,
-                                          (value) => student['Address'] = value)
-                                      : Text(student['Address']!)),
-                                  DataCell(isEditing
-                                      ? _buildEditableField(student['Route']!,
-                                          (value) => student['Route'] = value)
-                                      : Text(student['Route']!)),
-                                  DataCell(isEditing
-                                      ? _buildEditableField(
-                                          student['Bus Fees Paid']!,
-                                          (value) =>
-                                              student['Bus Fees Paid'] = value)
-                                      : Text(student['Bus Fees Paid']!)),
-                                  DataCell(isEditing
-                                      ? _buildEditableField(student['Class']!,
-                                          (value) => student['Class'] = value)
-                                      : Text(student['Class']!)),
-                                  DataCell(isEditing
-                                      ? _buildEditableField(
-                                          student['Email Address']!,
-                                          (value) =>
-                                              student['Email Address'] = value)
-                                      : Text(student['Email Address']!)),
-                                  DataCell(
-                                    isEditing
-                                        ? DropdownButton<String>(
-                                            value: student['Status'],
-                                            items: ['Active', 'Inactive']
-                                                .map((status) =>
-                                                    DropdownMenuItem(
-                                                      value: status,
-                                                      child: Text(status),
-                                                    ))
-                                                .toList(),
-                                            onChanged: (newValue) {
-                                              setState(() {
-                                                student['Status'] = newValue!;
-                                              });
-                                            },
-                                          )
-                                        : Text(student['Status']!),
-                                  ),
-                                  DataCell(
-                                    isEditing
-                                        ? IconButton(
-                                            icon: Icon(Icons.save),
-                                            onPressed: () {
-                                              setState(() {
-                                                isEditing = false;
-                                              });
-                                            },
-                                          )
-                                        : IconButton(
-                                            icon: Icon(Icons.delete),
-                                            onPressed: () =>
-                                                _deleteStudent(index),
+                              )
+                            : Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Icon(Icons.school, size: 24),
+                                          SizedBox(width: 10),
+                                          Text(
+                                            'Manage Student',
+                                            style: TextStyle(
+                                              fontSize: 20.0,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          ElevatedButton.icon(
+                                            onPressed: _addStudent,
+                                            icon: Icon(Icons.add,
+                                                color: Colors.white),
+                                            label: Text(
+                                              'Add Students',
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            ),
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  Color(0xFF03B0C1),
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 20, vertical: 15),
+                                            ),
+                                          ),
+                                          SizedBox(width: 10),
+                                          ElevatedButton.icon(
+                                            onPressed: _toggleEdit,
+                                            icon: Icon(Icons.edit,
+                                                color: Colors
+                                                    .white), // Edit icon added
+                                            label: Text(
+                                              isEditing
+                                                  ? "Save Changes"
+                                                  : "Edit Students",
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            ),
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  Color(0xFF03B0C1),
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 20, vertical: 15),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
-                                ]);
-                              }).toList(),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                                  SizedBox(height: 10),
+                                  Divider(height: 20, thickness: 1),
+                                  TextField(
+                                    controller: _searchController,
+                                    decoration: InputDecoration(
+                                      hintText: 'Search...',
+                                      prefixIcon: Icon(Icons.search),
+                                      border: OutlineInputBorder(),
+                                      contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 20, vertical: 15),
+                                    ),
+                                    onChanged: _filterStudents,
+                                  ),
+                                  SizedBox(height: 10),
+                                  Expanded(
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: DataTable(
+                                        columnSpacing: 20,
+                                        columns: [
+                                          DataColumn(
+                                              label: Text('Enrollment No.')),
+                                          DataColumn(label: Text('Name')),
+                                          DataColumn(
+                                              label: Text('Phone Number')),
+                                          DataColumn(label: Text('Bus Number')),
+                                          DataColumn(label: Text('Address')),
+                                          DataColumn(label: Text('Route')),
+                                          DataColumn(
+                                              label: Text('Bus Fees Paid')),
+                                          DataColumn(label: Text('Class')),
+                                          DataColumn(
+                                              label: Text('Email Address')),
+                                          DataColumn(label: Text('Status')),
+                                          DataColumn(label: Text('Action')),
+                                        ],
+                                        rows: filteredStudents.map((student) {
+                                          int index =
+                                              filteredStudents.indexOf(student);
+                                          return DataRow(cells: [
+                                            DataCell(isEditing
+                                                ? _buildEditableField(
+                                                    student['Enrollment No.']!,
+                                                    (value) => student[
+                                                            'Enrollment No.'] =
+                                                        value)
+                                                : Text(student[
+                                                    'Enrollment No.']!)),
+                                            DataCell(isEditing
+                                                ? _buildEditableField(
+                                                    student['Name']!,
+                                                    (value) =>
+                                                        student['Name'] = value)
+                                                : Text(student['Name']!)),
+                                            DataCell(isEditing
+                                                ? _buildEditableField(
+                                                    student['Phone Number']!,
+                                                    (value) => student[
+                                                        'Phone Number'] = value)
+                                                : Text(
+                                                    student['Phone Number']!)),
+                                            DataCell(isEditing
+                                                ? _buildEditableField(
+                                                    student['Bus Number']!,
+                                                    (value) =>
+                                                        student['Bus Number'] =
+                                                            value)
+                                                : Text(student['Bus Number']!)),
+                                            DataCell(isEditing
+                                                ? _buildEditableField(
+                                                    student['Address']!,
+                                                    (value) =>
+                                                        student['Address'] =
+                                                            value)
+                                                : Text(student['Address']!)),
+                                            DataCell(isEditing
+                                                ? _buildEditableField(
+                                                    student['Route']!,
+                                                    (value) =>
+                                                        student['Route'] =
+                                                            value)
+                                                : Text(student['Route']!)),
+                                            DataCell(isEditing
+                                                ? _buildEditableField(
+                                                    student['Bus Fees Paid']!,
+                                                    (value) => student[
+                                                            'Bus Fees Paid'] =
+                                                        value)
+                                                : Text(
+                                                    student['Bus Fees Paid']!)),
+                                            DataCell(isEditing
+                                                ? _buildEditableField(
+                                                    student['Class']!,
+                                                    (value) =>
+                                                        student['Class'] =
+                                                            value)
+                                                : Text(student['Class']!)),
+                                            DataCell(isEditing
+                                                ? _buildEditableField(
+                                                    student['Email Address']!,
+                                                    (value) => student[
+                                                            'Email Address'] =
+                                                        value)
+                                                : Text(
+                                                    student['Email Address']!)),
+                                            DataCell(
+                                              isEditing
+                                                  ? DropdownButton<String>(
+                                                      value: student['Status'],
+                                                      items: [
+                                                        'Active',
+                                                        'Inactive'
+                                                      ]
+                                                          .map((status) =>
+                                                              DropdownMenuItem(
+                                                                value: status,
+                                                                child: Text(
+                                                                    status),
+                                                              ))
+                                                          .toList(),
+                                                      onChanged: (newValue) {
+                                                        setState(() {
+                                                          student['Status'] =
+                                                              newValue!;
+                                                        });
+                                                      },
+                                                    )
+                                                  : Text(student['Status']!),
+                                            ),
+                                            DataCell(
+                                              isEditing
+                                                  ? IconButton(
+                                                      icon: Icon(Icons.save),
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          isEditing = false;
+                                                        });
+                                                      },
+                                                    )
+                                                  : IconButton(
+                                                      icon: Icon(Icons.delete),
+                                                      onPressed: () =>
+                                                          _deleteStudent(index),
+                                                    ),
+                                            ),
+                                          ]);
+                                        }).toList(),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                   ),
                 ),
               ),
