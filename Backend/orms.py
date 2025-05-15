@@ -25,8 +25,6 @@ class Organization(Base):
         self.password = password
         self.institute_name = institute_name
 
-
-
 class Route(Base):
     __tablename__ = 'Route'
 
@@ -108,7 +106,6 @@ class Driver(Base):
         organization_name = self.organization.institute_name if self.organization else "N/A"
         return f"<Driver(driver_photo='{self.driver_photo}', driver_name='{self.driver_name}', driver_phone='{self.driver_phone}', driver_address='{self.driver_address}', driver_route='{self.driver_route}', driver_busnumber='{self.driver_busnumber}', driver_salary='{self.driver_salary}', status='{self.status}', organization_name='{organization_name}')>"
 
-
 class Bus(Base):
 
     __tablename__ = 'Bus'
@@ -157,7 +154,6 @@ class Bus(Base):
     def __repr__(self):
         organization_name = self.organization.institute_name if self.organization else "N/A"
         return f"<Bus(bus_number='{self.bus_number}', bus_seats='{self.bus_seats}', bus_route='{self.bus_route}', driver_name='{self.driver_name}', driver_phone='{self.driver_phone}', register_numberplate='{self.register_numberplate}', status='{self.status}', shift='{self.shift}', time='{self.time}', organization_name='{organization_name}')>"
-
 
 class Student(Base):
 
@@ -213,4 +209,3 @@ class Student(Base):
             "email": self.email,
             "id":self.id
         }
-

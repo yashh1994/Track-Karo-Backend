@@ -3,8 +3,12 @@
 
 
 pro.env
-
 .vscode
-venv
 
+venv
 neon.py
+
+
+
+/venv/
+

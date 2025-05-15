@@ -579,7 +579,7 @@ def get_all_students():
         students = session.query(Student).filter_by(organization_id=organization_id).all()
         
         if not students:
-            return jsonify({"error": "No students found for the given organization_id"}), 404
+            return jsonify([]), 200
         
         student_data = [student.to_json() for student in students]
 
