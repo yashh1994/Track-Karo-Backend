@@ -4,8 +4,7 @@ from dotenv import load_dotenv
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from orms import Base, Bus, Driver, Organization, Route, Student
-
+from orms import  Base, Bus, Driver, Organization, Route, Student
 load_dotenv(dotenv_path='./pro.env')
 app = Flask(__name__)   
 CORS(app)
