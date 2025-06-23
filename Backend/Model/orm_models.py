@@ -4,11 +4,9 @@ from sqlalchemy.dialects.postgresql import ARRAY,JSONB
 from sqlalchemy.orm import relationship
 from flask_cors import CORS
 from dotenv import load_dotenv
-import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-load_dotenv(dotenv_path='./pro.env')
-
+from db.session import Base
 
 # Base = declarative_base()
 
@@ -35,12 +33,13 @@ class Organization(Base):
     drivers = relationship("Driver", back_populates="organization", cascade="all, delete-orphan")
     students = relationship("Student", back_populates="organization", cascade="all, delete-orphan")
 
+    assignments = relationship("BusAssignment", back_populates="organization")
+
 
     def __init__(self, email, password, institute_name):
         self.email = email
         self.password = password
         self.institute_name = institute_name
-
 
 class BusAssignment(Base):
     __tablename__ = 'BusAssignment'

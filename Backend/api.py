@@ -2,9 +2,43 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
 import os
+from Services.bus import add_bus, get_all_bus, delete_bus, update_bus
+
 load_dotenv(dotenv_path='./pro.env')
 app = Flask(__name__)   
 CORS(app)
+
+
+
+
+
+
+#! Bus
+
+@app.route('/add-bus',methods=['POST'])
+def handle_add_bus():
+    data = request.get_json()
+    return add_bus(data)
+
+
+@app.route('/get-all-bus', methods=['POST'])
+def handle_get_all_bus():
+    data = request.get_json()
+    return get_all_bus(data)
+
+
+@app.route('/delete-bus', methods=['DELETE'])
+def handle_delete_bus():
+    data = request.get_json()
+    return delete_bus(data)
+
+
+@app.route('/update-bus', methods=['PUT'])
+def handle_update_bus():
+    data = request.get_json()
+    return update_bus(data)
+
+
 
 
 
@@ -12,90 +46,59 @@ CORS(app)
 
 @app.route('/add-organization', methods=['POST'])
 def handle_add_organization():
-    return jsonify(add_organization(data))
-
-
-def add_organization():
     data = request.get_json()
+    return add_organization(data)
 
-    organization_name = data['institute_name']
-    organization_email = data['email']
-    organization_password = data['password']
-
-    new_organization = Organization(
-        institute_name=organization_name,
-        email=organization_email,
-        password=organization_password
-    )
-
-    session = Session()
-    try:
-        session.add(new_organization)
-        session.commit()
-        return jsonify({"message": "Organization added successfully"}), 201
-    except Exception as e:
-        session.rollback()
-        return jsonify({"error": str(e)}), 500
-    finally:
-        session.close()
 
 @app.route('/get-organization-data/<string:id>', methods=['GET'])
-def get_organization_data(id):
-    session = Session()
-    organization = session.query(Organization).filter_by(id=id).first()
-    organization_buses = session.query(Bus).filter_by(organization_id=id).all()
-    organization_routes = session.query(Route).filter_by(organization_id=id).all()
-    organization_drivers = session.query(Driver).filter_by(organization_id=id).all()
-    organization_students = session.query(Student).filter_by(organization_id=id).all()
+def handle_get_organization_Data(id):
+    return get_organization_data(id)
 
-
-
-
-    if not organization:
-        return jsonify({"error": "Organization not found"}), 404
-    
-    organization_data = {
-        "Detials": {
-            "id": organization.id,
-            "institute_name": organization.institute_name,
-            "email": organization.email,
-            "password": organization.password
-        },
-        "buses": [bus.__repr__() for bus in organization_buses],
-        "routes": [route.__repr__() for route in organization_routes],
-        "drivers": [driver.__repr__() for driver in organization_drivers],
-        "Students": [student.__repr__() for student in organization_students]
-    }
-
-    session.close()
-
-
-    if organization_data:
-        print("This is the organization data: ",organization_data)
-        return jsonify(organization_data), 200
-    else:
-        return jsonify({"error": "Organization not found"}), 404
 
 @app.route('/login-organization', methods=['POST'])
-def login_organization():
+def handle_login_organization():
     data = request.get_json()
+    return login_organization(data)
 
-    email = data.get('email')
-    password = data.get('password')
 
-    if not email or not password:
-        return jsonify({"error": "Invalid input. 'email' and 'password' are required."}), 400
 
-    session = Session()
-    try:
-        organization = session.query(Organization).filter_by(email=email, password=password).first()
-        if not organization:
-            return jsonify({"error": "Invalid email or password"}), 401
 
-        return jsonify({"message": "Login successful", "organization_id": organization.id}), 200
-    except Exception as e:
-        app.logger.error(f"Error logging in organization: {e}")
-        return jsonify({"error": "An internal error occurred"}), 500
-    finally:
-        session.close()
 
+#! Routes
+
+@app.route('/get-all-routes', methods=['POST'])
+def handle_get_all_routes():
+    data = request.get_json()
+    return get_all_routes(data)
+
+
+@app.route('/add-route', methods=['POST'])
+def handle_add_route():
+    data = request.get_json()
+    return add_route(data)
+
+
+@app.route('/delete-route', methods=['DELETE'])
+def handle_delete_route():
+    data = request.get_json()
+    return delete_route(data)
+
+
+@app.route('/update-route', methods=['PUT'])
+def handle_update_route():
+    data = request.get_json()
+    return update_route(data)
+
+
+
+
+
+
+@app.route('/', methods=['GET'])
+def test_route():
+    return "The routes are working!", 200
+
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
+    print("Server is running on port 5000")
