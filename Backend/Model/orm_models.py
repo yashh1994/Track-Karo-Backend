@@ -2,8 +2,25 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.dialects.postgresql import ARRAY,JSONB
 from sqlalchemy.orm import relationship
+from flask_cors import CORS
+from dotenv import load_dotenv
+import os
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+load_dotenv(dotenv_path='./pro.env')
 
-Base = declarative_base()
+
+# Base = declarative_base()
+
+
+# PG_DB_URL = os.getenv('SUPABASE_PG_DATABASE_URL')
+# print("This is the url ---------- ",PG_DB_URL)
+# engine = create_engine(PG_DB_URL)
+# Base.metadata.create_all(engine)
+
+# Session = sessionmaker(bind=engine)
+
+
 
 class Organization(Base):
     __tablename__ = 'Organization'
@@ -199,7 +216,7 @@ class Student(Base):
     student_name = Column(String, nullable=False)
     student_phone = Column(String, nullable=False)
     student_address = Column(String, nullable=False)
-    busfee = Column(String, nullable=False)
+    busfee_paid = Column(Boolean, nullable=False)
     email = Column(String, nullable=False)
 
     assignments = relationship("BusAssignment", back_populates="student")

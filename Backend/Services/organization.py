@@ -1,0 +1,81 @@
+from Model.orm_models import Organization, BusAssignment, Bus, Driver, Route, Student
+from db.session import Session
+from flask import Flask, request, jsonify
+
+
+
+def add_organization(data):
+    organization_name = data['institute_name']
+    organization_email = data['email']
+    organization_password = data['password']
+
+    new_organization = Organization(
+        institute_name=organization_name,
+        email=organization_email,
+        password=organization_password
+    )
+
+    session = Session()
+    try:
+        session.add(new_organization)
+        session.commit()
+        return jsonify({"message": "Organization added successfully"}), 201
+    except Exception as e:
+        session.rollback()
+        return jsonify({"error": str(e)}), 500
+    finally:
+        session.close()
+
+def get_organization_data(id):
+    session = Session()
+    organization = session.query(Organization).filter_by(id=id).first()
+    organization_buses = session.query(Bus).filter_by(organization_id=id).all()
+    organization_routes = session.query(Route).filter_by(organization_id=id).all()
+    organization_drivers = session.query(Driver).filter_by(organization_id=id).all()
+    organization_students = session.query(Student).filter_by(organization_id=id).all()
+
+
+    if not organization:
+        return jsonify({"error": "Organization not found"}), 404
+    
+    organization_data = {
+        "Detials": {
+            "id": organization.id,
+            "institute_name": organization.institute_name,
+            "email": organization.email,
+            "password": organization.password
+        },
+        "buses": [bus.__repr__() for bus in organization_buses],
+        "routes": [route.__repr__() for route in organization_routes],
+        "drivers": [driver.__repr__() for driver in organization_drivers],
+        "Students": [student.__repr__() for student in organization_students]
+    }
+
+    session.close()
+
+
+    if organization_data:
+        print("This is the organization data: ",organization_data)
+        return jsonify(organization_data), 200
+    else:
+        return jsonify({"error": "Organization not found"}), 404
+
+def login_organization(data):
+    email = data.get('email')
+    password = data.get('password')
+
+    if not email or not password:
+        return jsonify({"error": "Invalid input. 'email' and 'password' are required."}), 400
+
+    session = Session()
+    try:
+        organization = session.query(Organization).filter_by(email=email, password=password).first()
+        if not organization:
+            return jsonify({"error": "Invalid email or password"}), 401
+
+        return jsonify({"message": "Login successful", "organization_id": organization.id}), 200
+    except Exception as e:
+        print(f"------- Lobin Organization Error: {e} ----------")
+        return jsonify({"error": "An internal error occurred"}), 500
+    finally:
+        session.close()

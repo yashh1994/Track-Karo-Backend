@@ -6,7 +6,7 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from orms import  Base, Bus, Driver, Organization, Route, Student
-from new_orm_desing import Base
+from Model.orm_models import Base
 
 # Load environment variables
 load_dotenv(dotenv_path='./pro.env')
@@ -39,6 +39,7 @@ def check_database_connection():
 def initialize_table():
     print("This is the url ---------- ",PG_DB_URL)
     engine = create_engine(PG_DB_URL)
+    Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
 
     Session = sessionmaker(bind=engine)
