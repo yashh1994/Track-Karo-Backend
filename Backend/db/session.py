@@ -9,7 +9,7 @@ Base = declarative_base()
 
 
 
-PG_DB_URL = os.getenv('SUPABASE_PG_DATABASE_URL')
+PG_DB_URL = os.getenv('NEW_SUPABASE_PG_DATABASE_URL')
 print("This is the url ---------- ",PG_DB_URL)
 engine = create_engine(PG_DB_URL)
 Base.metadata.drop_all(engine)

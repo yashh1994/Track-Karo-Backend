@@ -1,6 +1,7 @@
 from Model.orm_models import Organization, BusAssignment, Bus, Driver, Route, Student
 from db.session import Session
-from flask import Flask, request, jsonify
+from flask import jsonify
+
 
 
 
@@ -75,7 +76,8 @@ def login_organization(data):
 
         return jsonify({"message": "Login successful", "organization_id": organization.id}), 200
     except Exception as e:
-        print(f"------- Lobin Organization Error: {e} ----------")
+        app.logger.error(f"Error logging in organization: {e}")
         return jsonify({"error": "An internal error occurred"}), 500
     finally:
         session.close()
+
