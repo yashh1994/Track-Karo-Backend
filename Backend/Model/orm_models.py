@@ -224,19 +224,19 @@ class Student(Base):
     organization = relationship("Organization", back_populates="students")
 
 
-    def __init__(self, photo, enrollment_number, student_name, student_phone, student_address, busfee, email, organization_id):
+    def __init__(self, photo, enrollment_number, student_name, student_phone, student_address, busfee_paid, email, organization_id):
         self.photo = photo
         self.enrollment_number = enrollment_number
         self.student_name = student_name
         self.student_phone = student_phone
         self.student_address = student_address
-        self.busfee = busfee
+        self.busfee_paid = busfee_paid
         self.email = email
         self.organization_id = organization_id
 
     def __repr__(self):
         organization_name = self.organization.institute_name if self.organization else "N/A"
-        return f"<Student(photo='{self.photo}', enrollment_number='{self.enrollment_number}', student_name='{self.student_name}', student_phone='{self.student_phone}', student_address='{self.student_address}', busfee='{self.busfee}', email='{self.email}', organization_name='{organization_name}')>"
+        return f"<Student(photo='{self.photo}', enrollment_number='{self.enrollment_number}', student_name='{self.student_name}', student_phone='{self.student_phone}', student_address='{self.student_address}', busfee_paid='{self.busfee_paid}', email='{self.email}', organization_name='{organization_name}')>"
     
     def to_json(self):
         return {
@@ -245,7 +245,7 @@ class Student(Base):
             "student_name": self.student_name,
             "student_phone": self.student_phone,
             "student_address": self.student_address,
-            "busfee": self.busfee,
+            "busfee_paid": self.busfee_paid,
             "email": self.email,
             "id":self.id
         }

@@ -2,7 +2,11 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
 import os
+from Services.organization import add_organization, get_organization_data, login_organization
 from Services.bus import add_bus, get_all_bus, delete_bus, update_bus
+from Services.routes import add_route, get_all_routes, delete_route, update_route
+from Services.driver import add_driver, get_all_drivers, delete_driver, update_driver
+from Services.student import add_student, get_all_students, delete_student, get_details_from_student, update_student
 
 load_dotenv(dotenv_path='./pro.env')
 app = Flask(__name__)   
@@ -10,6 +14,73 @@ CORS(app)
 
 
 
+
+
+
+
+
+
+#! Student
+
+@app.route('/add-student', methods=['POST'])
+def handle_add_student():
+    data = request.get_json()
+    return add_student(data)
+
+@app.route('/get-all-students', methods=['POST'])
+def handle_get_all_students():
+    data = request.get_json()
+    return get_all_students(data)
+
+
+@app.route('/delete-student', methods=['DELETE'])
+def handle_delete_student():
+    data = request.get_json()
+    return delete_student(data)
+
+
+@app.route('/update-student', methods=['PUT'])
+def handle_update_student():
+    data = request.get_json()
+    return update_student(data)
+
+
+@app.route('/get-details-from-student',methods=['GET'])
+def handle_get_details_from_student():
+    data = request.get_json()
+    return get_details_from_student(data)
+
+
+
+
+
+
+
+
+
+
+
+
+#! Driver
+@app.route('/add-driver', methods=['POST'])
+def handle_add_driver():
+    data = request.get_json()
+    return add_driver(data)
+
+@app.route('/get-all-drivers', methods=['POST'])
+def handle_get_all_drivers():
+    data = request.get_json()
+    return get_all_drivers(data)
+
+@app.route('/delete-driver', methods=['DELETE'])
+def handle_delete_driver():
+    data = request.get_json()
+    return delete_driver(data)
+
+@app.route('/update-driver', methods=['PUT'])
+def handle_update_driver():
+    data = request.get_json()
+    return update_driver(data)
 
 
 

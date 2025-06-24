@@ -48,4 +48,4 @@ def initialize_table():
 
 # Call the function to check the connection
 # check_database_connection()
-initialize_table()
+# initialize_table()
