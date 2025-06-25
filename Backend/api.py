@@ -60,7 +60,6 @@ def handle_get_details_from_student():
 
 
 
-
 #! Driver
 @app.route('/add-driver', methods=['POST'])
 def handle_add_driver():
@@ -167,7 +166,79 @@ def handle_update_route():
 
 @app.route('/', methods=['GET'])
 def test_route():
-    return "The routes are working!", 200
+    return """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Karoza Backend</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+                color: #fff;
+                font-family: 'Segoe UI', Arial, sans-serif;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+                margin: 0;
+            }
+            .container {
+                background: rgba(0,0,0,0.4);
+                padding: 40px 60px;
+                border-radius: 18px;
+                box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+                text-align: center;
+            }
+            h1 {
+                font-size: 2.8rem;
+                margin-bottom: 10px;
+                letter-spacing: 2px;
+            }
+            p {
+                font-size: 1.2rem;
+                margin-top: 0;
+                margin-bottom: 20px;
+            }
+            .logo {
+                width: 80px;
+                height: 80px;
+                margin-bottom: 20px;
+                border-radius: 50%;
+                background: #fff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+            }
+            .logo span {
+                font-size: 2.5rem;
+                color: #2a5298;
+                font-weight: bold;
+                font-family: 'Segoe UI', Arial, sans-serif;
+            }
+            @media (max-width: 600px) {
+                .container {
+                    padding: 20px 10px;
+                }
+                h1 {
+                    font-size: 2rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="logo"><span>🚌</span></div>
+            <h1>Welcome to Karoza Backend</h1>
+            <p>Your backend API is running.<br>
+            Track-Karo Bus System - Backend Service</p>
+        </div>
+    </body>
+    </html>
+    """, 200
 
 
 if __name__ == '__main__':
