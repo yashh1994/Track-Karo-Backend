@@ -7,8 +7,8 @@ pro.env
 
 venv
 neon.py
+Model/__pycache__
 
-
-
+Services/__pycache__
 /venv/
 
