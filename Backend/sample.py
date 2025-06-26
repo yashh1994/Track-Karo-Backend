@@ -7,6 +7,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from orms import  Base, Bus, Driver, Organization, Route, Student
 from Model.orm_models import Base
+from sqlalchemy import text
+
 
 # Load environment variables
 load_dotenv(dotenv_path='./pro.env')
@@ -37,8 +39,13 @@ def check_database_connection():
 
 
 def initialize_table():
-    print("This is the url ---------- ",PG_DB_URL)
     engine = create_engine(PG_DB_URL)
+
+    with engine.connect() as conn:
+        conn.execute(text("DROP TABLE IF EXISTS \"BusAssignment\" CASCADE"))
+        conn.execute(text("DROP TABLE IF EXISTS \"Student\" CASCADE"))
+        conn.commit()
+
     Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
 
@@ -48,4 +55,4 @@ def initialize_table():
 
 # Call the function to check the connection
 # check_database_connection()
-# initialize_table()
+initialize_table()

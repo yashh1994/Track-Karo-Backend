@@ -7,6 +7,8 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from db.session import Base
+from sqlalchemy import UniqueConstraint
+
 
 # Base = declarative_base()
 
@@ -41,6 +43,7 @@ class Organization(Base):
         self.password = password
         self.institute_name = institute_name
 
+
 class BusAssignment(Base):
     __tablename__ = 'BusAssignment'
 
@@ -48,40 +51,42 @@ class BusAssignment(Base):
     bus_id = Column(Integer, ForeignKey('Bus.id'), nullable=False)
     route_id = Column(Integer, ForeignKey('Route.id'), nullable=False)
     shift = Column(String, nullable=False)  # e.g., 'Morning', 'Evening', 'Night'
-    time = Column(String, nullable=False) 
+    time = Column(String, nullable=False)
     
-    student_id = Column(Integer, ForeignKey('Student.id'),nullable=True)
     driver_id = Column(Integer, ForeignKey('Driver.id'), nullable=True)
+    
+    organization_id = Column(Integer, ForeignKey('Organization.id'), nullable=False)
 
     bus = relationship("Bus", back_populates="assignments")
-    route = relationship("Route",back_populates="assignments")
-    driver = relationship("Driver",back_populates="assignments")
-    student = relationship("Student", back_populates="assignments")
+    route = relationship("Route", back_populates="assignments")
+    driver = relationship("Driver", back_populates="assignments")
 
-    organization_id = Column(Integer, ForeignKey('Organization.id'), nullable=False)
     organization = relationship("Organization", back_populates="assignments")
 
+    arrival_students = relationship(
+    "Student",
+    foreign_keys='Student.arrival_bus_assignment_id',
+    back_populates="arrival_assignment"
+    )
 
-    def __init__(self, organization_id,bus_id, route_id, shift, time, student_id=None, driver_id=None):
-        self.organization_id = organization_id
-        self.bus_id = bus_id
-        self.route_id = route_id
-        self.shift = shift
-        self.time = time
-        self.student_id = student_id
+    departure_students = relationship(
+        "Student",
+        foreign_keys='Student.departure_bus_assignment_id',
+        back_populates="departure_assignment"
+    )
+
+    __table_args__ = (
+        UniqueConstraint('bus_id', 'shift', 'time', name='uq_bus_shift_time'),
+    )
+
+    def assign_driver(self, driver_id):
         self.driver_id = driver_id
-    
-    def assign_driver(self,driver_id):
-        self.driver_id = driver_id
-    
-    def assign_student(self,student_id):
-        self.student_id = student_id
 
     def __repr__(self):
         bus_number = self.bus.bus_number if self.bus else "N/A"
         route_number = self.route.route_number if self.route else "N/A"
         driver_name = self.driver.driver_name if self.driver else "N/A"
-        return f"<BusAssignment(bus_number='{bus_number}', route_number='{route_number}', shift='{self.shift}', time='{self.time}', driver_name='{driver_name}', student_id='{self.student_id}')>"
+        return f"<BusAssignment(bus_number='{bus_number}', route_number='{route_number}', shift='{self.shift}', time='{self.time}', driver_name='{driver_name}')>"
 
     def to_json(self):
         return {
@@ -90,9 +95,11 @@ class BusAssignment(Base):
             "route_id": self.route_id,
             "shift": self.shift,
             "time": self.time,
-            "student_id": self.student_id,
-            "driver_id": self.driver_id
+            "driver_id": self.driver_id,
+            "arrival_student_count": len(self.arrival_students),
+            "departure_student_count": len(self.departure_students)
         }
+
 
 class Route(Base):
     __tablename__ = 'Route'
@@ -131,6 +138,7 @@ class Route(Base):
         organization_name = self.organization.institute_name if self.organization else "N/A"
         return f"<Route(route_number='{self.route_number}', route_name='{self.route_name}', source='{self.source}', destination='{self.destination}', stops='{self.stops}', organization_name='{organization_name}')>"
 
+
 class Bus(Base):
 
     __tablename__ = 'Bus'
@@ -140,11 +148,10 @@ class Bus(Base):
     bus_seats = Column(String, nullable=False)
     register_numberplate = Column(String, nullable=False)
     status = Column(Boolean,nullable=False)
-    assignments = relationship("BusAssignment", back_populates="bus")
-
     organization_id = Column(Integer, ForeignKey('Organization.id'), nullable=False)
-    organization = relationship("Organization", back_populates="buses")
 
+    assignments = relationship("BusAssignment", back_populates="bus")
+    organization = relationship("Organization", back_populates="buses")
 
     def __init__(self, bus_number, bus_seats, status, register_numberplate,organization_id):
         self.bus_number = bus_number
@@ -165,6 +172,7 @@ class Bus(Base):
     def __repr__(self):
         organization_name = self.organization.institute_name if self.organization else "N/A"
         return f"<Bus(bus_number='{self.bus_number}', bus_seats='{self.bus_seats}', register_numberplate='{self.register_numberplate}', organization_name='{organization_name}, status='{self.status}')>"
+
 
 class Driver(Base):
 
@@ -205,6 +213,7 @@ class Driver(Base):
         organization_name = self.organization.institute_name if self.organization else "N/A"
         return f"<Driver(driver_photo='{self.driver_photo}', driver_name='{self.driver_name}', driver_phone='{self.driver_phone}', driver_address='{self.driver_address}', driver_salary='{self.driver_salary}', organization_name='{organization_name}')>"
 
+
 class Student(Base):
 
     __tablename__ = "Student"
@@ -218,8 +227,22 @@ class Student(Base):
     busfee_paid = Column(Boolean, nullable=False)
     email = Column(String, nullable=False)
 
-    assignments = relationship("BusAssignment", back_populates="student")
-    
+    arrival_bus_assignment_id = Column(Integer, ForeignKey('BusAssignment.id'), nullable=True)
+    departure_bus_assignment_id = Column(Integer, ForeignKey('BusAssignment.id'), nullable=True)
+
+    arrival_assignment = relationship(
+    "BusAssignment",
+    foreign_keys=[arrival_bus_assignment_id],
+    back_populates="arrival_students"
+    )
+
+    departure_assignment = relationship(
+        "BusAssignment",
+        foreign_keys=[departure_bus_assignment_id],
+        back_populates="departure_students"
+    )
+
+
     organization_id = Column(Integer, ForeignKey('Organization.id'), nullable=False)
     organization = relationship("Organization", back_populates="students")
 
@@ -247,6 +270,8 @@ class Student(Base):
             "student_address": self.student_address,
             "busfee_paid": self.busfee_paid,
             "email": self.email,
-            "id":self.id
+            "id":self.id,
+            "arrival_bus_assignment_id":self.arrival_bus_assignment_id,
+            "departure_assignment":self.departure_assignment
         }
 

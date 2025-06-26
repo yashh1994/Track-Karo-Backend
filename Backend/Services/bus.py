@@ -1,8 +1,11 @@
 from Model.orm_models import Organization, BusAssignment, Bus, Driver, Route, Student
 from db.session import Session
 from flask import jsonify
+from sqlalchemy.exc import IntegrityError
 
 
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm.exc import NoResultFound
 
 def add_bus(data):
     bus_number = data['bus_number']
@@ -10,24 +13,60 @@ def add_bus(data):
     register_numberplate = data['register_numberplate']
     status = data['status']
     organization_id = data['organization_id']
-
-    new_bus = Bus(
-        bus_number=bus_number,
-        bus_seats=bus_seats,
-        register_numberplate=register_numberplate,
-        status=status,
-        organization_id=organization_id
-    )
+    time = data['time']
+    shift = data['shift']
+    route_id = data['route_id']
 
     session = Session()
     try:
-        session.add(new_bus)
+        # 1. Check if a bus with same registration plate already exists
+        existing_bus = session.query(Bus).filter_by(
+            register_numberplate=register_numberplate,
+            organization_id=organization_id
+        ).first()
+
+        if existing_bus:
+            bus_id = existing_bus.id
+            print(f"Using existing bus with ID: {bus_id}")
+        else:
+            # 2. Add new bus if not found
+            new_bus = Bus(
+                bus_number=bus_number,
+                bus_seats=bus_seats,
+                register_numberplate=register_numberplate,
+                status=status,
+                organization_id=organization_id
+            )
+            session.add(new_bus)
+            session.flush()  # Get new_bus.id without commit
+            bus_id = new_bus.id
+            print(f"Created new bus with ID: {bus_id}")
+
+        # 3. Add BusAssignment for this bus
+        bus_assignment = BusAssignment(
+            organization_id=organization_id,
+            bus_id=bus_id,
+            shift=shift,
+            time=time,
+            route_id=route_id,
+        )
+
+        session.add(bus_assignment)
         session.commit()
-        return jsonify({"message": "Bus added successfully"}), 201
+
+        return jsonify({"message": "Bus assignment added successfully", "bus_id": bus_id}), 201
+
+    except IntegrityError as e:
+        session.rollback()
+        if "uq_bus_shift_time" in str(e.orig):
+            return jsonify({"error": "This bus already has an assignment for the given time and shift"}), 400
+        return jsonify({"error": "Database integrity error"}), 400
+
     except Exception as e:
         session.rollback()
-        print(f"Exception occurred while adding bus: {e}")
+        print(f"Exception occurred while adding bus or assignment: {e}")
         return jsonify({"error": str(e)}), 500
+
     finally:
         session.close()
 

@@ -10,6 +10,7 @@ def add_driver(data):
     driver_address = data['driver_address']
     organization_id = data['organization_id']
     driver_salary = data.get('driver_salary')
+    
 
     new_driver = Driver(
         driver_photo=driver_photo,
@@ -22,15 +23,94 @@ def add_driver(data):
 
     session = Session()
     try:
+        # Step 1: Add new driver
         session.add(new_driver)
+        # session.flush()  # Get new_driver.id before commit
+
+        # Step 2: Find the matching BusAssignment
+        # bus_assignment = session.query(BusAssignment).filter_by(
+        #     bus_id=bus_id,
+        #     time=time,
+        #     shift=shift
+        # ).first()
+
+        # if not bus_assignment:
+        #     session.rollback()
+        #     return jsonify({"error": "No matching bus assignment found for the given bus_id, time, and shift"}), 404
+
+        # # Step 3: Assign the driver to the BusAssignment
+        # bus_assignment.driver_id = new_driver.id
+
         session.commit()
-        return jsonify({"message": "Driver added successfully"}), 200
+        return jsonify({
+            "message": "Driver added and assigned to bus successfully",
+            "driver_id": new_driver.id,
+            # "bus_assignment_id": bus_assignment.id
+        }), 200
+
     except Exception as e:
         session.rollback()
-        print(f"Error adding driver: {e}")
+        print(f"Error adding driver or assigning to bus: {e}")
         return jsonify({"error": str(e)}), 500
     finally:
         session.close()
+
+def revoke_driver_from_bus(data):
+    session = Session()
+    try:
+        organization_id = data['organization_id']
+        driver_id = data['driver_id']
+        assignment_id = data['assignment_id']
+
+        bus_assignment = session.query(BusAssignment).filter_by(
+            id=assignment_id,
+            organization_id=organization_id,
+            driver_id=driver_id
+        ).first()
+
+        if not bus_assignment:
+            return jsonify({"error": "No matching bus assignment found for this driver and bus"}), 404
+
+        bus_assignment.driver_id = None
+        session.commit()
+        return jsonify({"message": "Driver revoked from bus successfully"}), 200
+
+    except Exception as e:
+        session.rollback()
+        print(f"Error revoking driver from bus: {e}")
+        return jsonify({"error": str(e)}), 500
+
+    finally:
+        session.close()
+
+
+def assign_bus_to_driver(data):
+    session = Session()
+    try:
+        organization_id = data['organization_id']
+        driver_id = data['driver_id']
+        assignment_id = data['assignment_id']  # FIX: previously wrongly named as bus_id
+
+        bus_assignment = session.query(BusAssignment).filter_by(
+            id=assignment_id,
+            organization_id=organization_id
+        ).first()
+
+        if not bus_assignment:
+            return jsonify({"error": "Invalid bus assignment: not found for this organization"}), 404
+
+        bus_assignment.driver_id = driver_id
+        session.commit()
+        return jsonify({"message": "Bus assigned to driver successfully"}), 200
+        
+    except Exception as e:
+        session.rollback()
+        print(f"Error assigning bus to driver: {e}")
+        return jsonify({"error": str(e)}), 500
+
+    finally:
+        session.close()
+
 
 
 def get_all_drivers(data):
