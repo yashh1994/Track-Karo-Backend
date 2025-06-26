@@ -8,6 +8,7 @@ from sqlalchemy.orm import sessionmaker
 from orms import  Base, Bus, Driver, Organization, Route, Student
 from Model.orm_models import Base
 from sqlalchemy import text
+import google.generativeai as genai
 
 
 # Load environment variables
@@ -15,6 +16,13 @@ load_dotenv(dotenv_path='./pro.env')
 
 # Get the database URL from the environment variable
 PG_DB_URL = os.getenv('NEW_SUPABASE_PG_DATABASE_URL')
+
+# Replace with your API key
+genai.configure(api_key="AIzaSyBkJB0HKjs46sAqXr62WLHxXezTPiO8iuY")
+
+# Choose the model you want to use (from list_models output)
+
+# Create a chat session
 
 def check_database_connection():
     try:
@@ -38,7 +46,7 @@ def check_database_connection():
         print("Error while connecting to the database:", e)
 
 
-def initialize_table():
+def delete_create_table():
     engine = create_engine(PG_DB_URL)
 
     with engine.connect() as conn:
@@ -53,6 +61,26 @@ def initialize_table():
 
     print("-- TABLES are created ------")
 
+
+def is_gemini_model_working():
+
+    model = genai.GenerativeModel('gemini-2.0-flash-lite')  # or 'gemini-1.0-pro'
+
+    chat = model.start_chat()
+
+    print("🤖 Gemini Chatbot is ready! Type 'exit' to quit.\n")
+    user_input="hey introduce yourself"
+    # Chat loop
+    response = chat.send_message(user_input)
+    print(f"Gemini: {response.text}\n")
+
+
+
+
+
+
+
+
 # Call the function to check the connection
 # check_database_connection()
-initialize_table()
+# delete_create_table()

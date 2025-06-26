@@ -105,7 +105,7 @@ class Route(Base):
     __tablename__ = 'Route'
 
     id = Column(Integer,primary_key = True,nullable=False)
-    route_number = Column(String,nullable=False)
+    route_number = Column(String, nullable=False, unique=True)
     route_name = Column(String,nullable=False)
     source= Column(JSONB, nullable=False)
     destination = Column(JSONB, nullable=False)
@@ -144,7 +144,7 @@ class Bus(Base):
     __tablename__ = 'Bus'
 
     id = Column(Integer, primary_key=True,nullable=False)
-    bus_number = Column(String, nullable=False)
+    bus_number = Column(String, nullable=False, unique=True)
     bus_seats = Column(String, nullable=False)
     register_numberplate = Column(String, nullable=False)
     status = Column(Boolean,nullable=False)
@@ -220,7 +220,7 @@ class Student(Base):
 
     id = Column(Integer, primary_key=True)
     photo = Column(String, nullable=True)
-    enrollment_number = Column(String, nullable=False)
+    enrollment_number = Column(String, nullable=False, unique=True)
     student_name = Column(String, nullable=False)
     student_phone = Column(String, nullable=False)
     student_address = Column(String, nullable=False)
