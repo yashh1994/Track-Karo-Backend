@@ -5,7 +5,7 @@ import os
 from Services.organization import add_organization, get_organization_data, login_organization
 from Services.bus import add_bus, get_all_bus, delete_bus, update_bus
 from Services.routes import add_route, get_all_routes, delete_route, update_route
-from Services.driver import add_driver, get_all_drivers, delete_driver, update_driver
+from Services.driver import add_driver, get_all_drivers, delete_driver, update_driver, assign_bus_to_driver, revoke_driver_from_bus
 from Services.student import add_student, get_all_students, delete_student, get_details_from_student, update_student
 
 load_dotenv(dotenv_path='./pro.env')
@@ -45,6 +45,8 @@ def handle_update_student():
     return update_student(data)
 
 
+
+
 @app.route('/get-details-from-student',methods=['GET'])
 def handle_get_details_from_student():
     data = request.get_json()
@@ -61,6 +63,7 @@ def handle_get_details_from_student():
 
 
 #! Driver
+
 @app.route('/add-driver', methods=['POST'])
 def handle_add_driver():
     data = request.get_json()
@@ -80,6 +83,19 @@ def handle_delete_driver():
 def handle_update_driver():
     data = request.get_json()
     return update_driver(data)
+
+
+@app.route('/assign-bus-to-driver',methods=['POST'])
+def handle_assign_bus_to_driver():
+    data = request.get_json()
+    return assign_bus_to_driver(data)
+
+@app.route('/revoke-driver-from-bus',methods=['POST'])
+def handle_revoke_driver_from_bus():
+    data = request.get_json()
+    return revoke_driver_from_bus(data)
+
+
 
 
 
