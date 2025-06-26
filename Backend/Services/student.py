@@ -81,8 +81,8 @@ def add_student(data):
         organization_id = data.get('organization_id')
 
         # Optional arrival/departure assignment IDs
-        arrival_id = data.get('arrival_bus_assignment_id')
-        departure_id = data.get('departure_bus_assignment_id')
+        arrival_id = data.get('arrival_id')
+        departure_id = data.get('departure_id')
 
         # Validate required fields
         required_fields = ['enrollment_number', 'student_name', 'student_phone',

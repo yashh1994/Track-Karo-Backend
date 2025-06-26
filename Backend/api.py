@@ -7,10 +7,18 @@ from Services.bus import add_bus, get_all_bus, delete_bus, update_bus
 from Services.routes import add_route, get_all_routes, delete_route, update_route
 from Services.driver import add_driver, get_all_drivers, delete_driver, update_driver, assign_bus_to_driver, revoke_driver_from_bus
 from Services.student import add_student, get_all_students, delete_student, get_details_from_student, update_student
+from ai_chat import chat_query
 
 load_dotenv(dotenv_path='./pro.env')
 app = Flask(__name__)   
 CORS(app)
+
+
+#! AI
+@app.route('/ai-chat-query',methods=['POST'])
+def handle_ai_chat_query():
+    data = request.get_json()
+    return chat_query(data['query'])
 
 
 
