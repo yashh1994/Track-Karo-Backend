@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 import re
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from Model.orm_models import Organization, BusAssignment, Bus, Driver, Route, Student
@@ -8,54 +9,11 @@ import google.generativeai as genai
 from db.session import Session
 
 
-genai.configure(api_key="AIzaSyBkJB0HKjs46sAqXr62WLHxXezTPiO8iuY")  # Replace with your actual key
-model = genai.GenerativeModel("gemini-2.0-flash-lite")
+load_dotenv(dotenv_path='./pro.env')
+GEMINI_MODEL_API_KEY = os.getenv('GEMINI_MODEL_API_KEY')
 
-# def run_action(action_text):
-#     m = re.match(r'(\w+)\((.*)\)', action_text)
-#     if not m:
-#         return "Couldn't parse action."
-#     fn, args = m.groups()
-#     kwargs = {}
-#     positional_args = []
-#     if args.strip():  # Only parse if there are arguments
-#         for pair in args.split(","):
-#             if not pair.strip():
-#                 continue
-#             if "=" in pair:
-#                 k, v = pair.split("=")
-#                 kwargs[k.strip()] = v.strip().strip('"')
-#             else:
-#                 positional_args.append(pair.strip().strip('"'))
-#     if fn == "get_driver_status":
-#         driver_name = kwargs.get("driver_name")
-#         shift = kwargs.get("shift")
-#         if driver_name is None and positional_args:
-#             driver_name = positional_args[0]
-#         if shift is None and len(positional_args) > 1:
-#             shift = positional_args[1]
-#         if shift is not None and shift.lower() == "none":
-#             shift = None
-#         return get_driver_details(driver_name)
-#     elif fn == "get_students_on_route":
-#         route_name = kwargs.get("route_name")
-#         if route_name is None and positional_args:
-#             route_name = positional_args[0]
-#         return get_students_on_route(route_number)
-#     elif fn == "get_free_drivers":
-#         return get_free_drivers()
-#     elif fn == "get_stops_on_route":
-#         route_number = kwargs.get("route_number")
-#         if route_number is None and positional_args:
-#             route_number = positional_args[0]
-#         return get_stops_on_route(route_number)
-    
-#     elif fn == "get_buses_on_route":
-#         route_number = kwargs.get("route_number")
-#         if route_number is None and positional_args:
-#             route_number = positional_args[0]
-#         return get_buses_on_route(route_number)
-#     return f"Unknown action '{fn}'."
+genai.configure(api_key=GEMINI_MODEL_API_KEY)  # Replace with your actual key
+model = genai.GenerativeModel("gemini-2.0-flash-lite")
 
 def get_driver_details(driver_name: str):
     session = Session()
