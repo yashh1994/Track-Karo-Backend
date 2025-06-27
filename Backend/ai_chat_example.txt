@@ -1,0 +1,58 @@
+🚐 Driver-related
+✅ Calls: get_driver_status(driver_name[, shift])
+
+Is Ramesh available in the morning?
+
+What is the status of driver Suresh?
+
+Is Kiran assigned in any shift?
+
+Show me if Nikhil is free or assigned.
+
+What shift is driver Rahul working?
+
+Is Amit driving in the evening?
+
+🚌 Free Drivers
+✅ Calls: get_free_drivers()
+
+Show all free drivers.
+
+Who is not assigned any bus?
+
+List all available drivers.
+
+Are there any unassigned drivers?
+
+📍 Route Stops
+✅ Calls: get_stops_on_route(route_number)
+
+What are the stops on route 105?
+
+Show me all stops on route number 102.
+
+Give me the stop names for route 109.
+
+Which locations are covered in route 101?
+
+🚌 Buses on a Route
+✅ Calls: get_buses_on_route(route_number)
+
+Which buses run on route 105?
+
+Show me all buses for route 103.
+
+How many buses are assigned to route 102?
+
+Bus numbers on route 101?
+
+👨‍🎓 Students on Route
+✅ Calls: get_students_on_route(route_name)
+
+Which students are on the RightTown Loop route?
+
+Who all are traveling via CityCenter Express?
+
+List students assigned to route North Ridge.
+
+Are any students on University Shuttle?

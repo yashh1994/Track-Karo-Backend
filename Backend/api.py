@@ -18,7 +18,21 @@ CORS(app)
 @app.route('/ai-chat-query',methods=['POST'])
 def handle_ai_chat_query():
     data = request.get_json()
-    return chat_query(data['query'])
+    response = None
+    for _ in range(3):
+        response = chat_query(data['query'])
+        # If response is a Flask Response object, check status_code
+        if hasattr(response, 'status_code'):
+            if response.status_code == 200:
+                return response
+        # If response is a tuple (data, status), check status
+        elif isinstance(response, tuple) and len(response) > 1:
+            if response[1] == 200:
+                return response
+        # If response is a dict (jsonify), assume success if no error key
+        elif isinstance(response, dict):
+            return response
+    return response
 
 
 
