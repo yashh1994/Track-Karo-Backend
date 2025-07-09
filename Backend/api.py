@@ -49,7 +49,7 @@ def handle_add_student():
     data = request.get_json()
     return add_student(data)
 
-@app.route('/get-all-students', methods=['POST'])
+@app.route('/get-all-students', methods=['GET'])
 def handle_get_all_students():
     data = request.get_json()
     return get_all_students(data)
@@ -91,7 +91,7 @@ def handle_add_driver():
     data = request.get_json()
     return add_driver(data)
 
-@app.route('/get-all-drivers', methods=['POST'])
+@app.route('/get-all-drivers', methods=['GET'])
 def handle_get_all_drivers():
     data = request.get_json()
     return get_all_drivers(data)
@@ -129,7 +129,7 @@ def handle_add_bus():
     return add_bus(data)
 
 
-@app.route('/get-all-bus', methods=['POST'])
+@app.route('/get-all-bus', methods=['GET'])
 def handle_get_all_bus():
     data = request.get_json()
     return get_all_bus(data)
@@ -174,7 +174,7 @@ def handle_login_organization():
 
 #! Routes
 
-@app.route('/get-all-routes', methods=['POST'])
+@app.route('/get-all-routes', methods=['GET'])
 def handle_get_all_routes():
     data = request.get_json()
     return get_all_routes(data)

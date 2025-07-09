@@ -272,6 +272,6 @@ class Student(Base):
             "email": self.email,
             "id":self.id,
             "arrival_bus_assignment_id":self.arrival_bus_assignment_id,
-            "departure_assignment":self.departure_assignment
+            "departure_assignment":self.departure_bus_assignment_id
         }
 
