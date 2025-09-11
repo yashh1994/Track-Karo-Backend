@@ -14,6 +14,11 @@ app = Flask(__name__)
 CORS(app)
 
 
+
+# TODO: Get Bus from from route
+
+
+
 #! AI
 @app.route('/ai-chat-query',methods=['POST'])
 def handle_ai_chat_query():
@@ -65,9 +70,6 @@ def handle_delete_student():
 def handle_update_student():
     data = request.get_json()
     return update_student(data)
-
-
-
 
 @app.route('/get-details-from-student',methods=['GET'])
 def handle_get_details_from_student():

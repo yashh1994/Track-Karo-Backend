@@ -68,7 +68,7 @@ def revoke_driver_from_bus(data):
             driver_id=driver_id
         ).first()
 
-        if not bus_assignment:
+        if not bus_assignment or bus_assignment.driver_id != driver_id:
             return jsonify({"error": "No matching bus assignment found for this driver and bus"}), 404
 
         bus_assignment.driver_id = None
