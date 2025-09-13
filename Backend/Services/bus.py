@@ -58,6 +58,7 @@ def add_bus(data):
 
     except IntegrityError as e:
         session.rollback()
+        print(e)
         if "uq_bus_shift_time" in str(e.orig):
             return jsonify({"error": "This bus already has an assignment for the given time and shift"}), 400
         return jsonify({"error": "Database integrity error"}), 400
