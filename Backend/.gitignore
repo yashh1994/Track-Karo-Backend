@@ -12,3 +12,5 @@ Model/__pycache__
 Services/__pycache__
 /venv/
 
+**/__pycache__/
+
