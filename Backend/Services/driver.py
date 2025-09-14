@@ -70,7 +70,7 @@ def revoke_driver_from_bus(data):
 
         if not bus_assignment or bus_assignment.driver_id != driver_id:
             return jsonify({"error": "No matching bus assignment found for this driver and bus"}), 404
-
+ 
         bus_assignment.driver_id = None
         session.commit()
         return jsonify({"message": "Driver revoked from bus successfully"}), 200
