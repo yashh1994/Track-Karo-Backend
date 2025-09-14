@@ -8,7 +8,7 @@ from Services.routes import add_route, get_all_routes, delete_route, update_rout
 from Services.driver import add_driver, get_all_drivers, delete_driver, update_driver, assign_bus_to_driver, revoke_driver_from_bus
 from Services.student import add_student, get_all_students, delete_student, get_details_from_student, update_student
 from ai_chat import chat_query
-from Services.bus_assignment import get_all_bus_assignments
+from Services.bus_assignment import get_all_bus_assignments, update_bus_assignment
 
 load_dotenv(dotenv_path='./pro.env')
 app = Flask(__name__)   
@@ -33,6 +33,12 @@ def handle_ai_chat_query():
 def handle_get_all_bus_assignments():
     data = request.get_json()
     return get_all_bus_assignments(data)
+
+@app.route('/update-bus-assignment', methods=['PUT'])
+def handle_update_bus_assignment():
+    data = request.get_json()
+    return update_bus_assignment(data)
+
 
 
 #! Student
